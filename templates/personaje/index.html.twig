@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Viendo {{ nombreCategoria }}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="fw-light">Listado de <span class="fw-bold">{{ nombreCategoria }}</span></h1>
+            <span class="badge bg-secondary">{{ elementos|length }} resultados</span>
+        </div>
+
+        <div class="row">
+            {% for el in elementos %}
+                <div class="col-md-4 col-lg-3 mb-4">
+                    <div class="card h-100 shadow-sm border-0">
+                        <img src="{{ el.imagenUrl|default('https://via.placeholder.com/300x300?text=Sin+Imagen') }}"
+                             class="card-img object-fit-cover"
+                             style="height: 250px;"
+                             alt="{{ el.nombre }}">
+
+                        <div class="card-body">
+                            <h5 class="card-title h6 fw-bold">{{ el.nombre }}</h5>
+                            <hr class="my-2 opacity-25">
+                            <p class="card-text small">
+                                {% if nombreCategoria == 'Personajes' %}
+                                    <span class="text-muted text-uppercase">Especie:</span>
+                                    <span class="badge bg-info text-dark">{{ el.datosExtra.species}}</span>
+                                {% else %}
+                                    <span class="text-muted text-uppercase">Tipo:</span>
+                                    <span class="badge bg-warning text-dark">{{ el.datosExtra.type|default('Desconocido') }}</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="card-footer bg-transparent border-0 pb-3">
+                            <a href="#" class="btn btn-primary btn-sm w-100 rounded-pill">Votar</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
