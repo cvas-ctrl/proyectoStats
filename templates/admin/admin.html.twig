@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Panel de Control - Rick & Morty{% endblock %}
+
+{% block body %}
+    <div class="container d-flex flex-column justify-content-start align-items-center vh-100 pt-5">
+
+        <h2 class="mb-5 text-uppercase fw-bold">Gestión de la Plataforma</h2>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success w-100 text-center">{{ message }}</div>
+        {% endfor %}
+
+        <div class="row g-4 justify-content-center w-100">
+            <div class="col-6 col-md-3">
+                <a href="{{ path('data_load_api') }}" class="text-decoration-none text-white">
+                    <div class="card text-center text-white bg-dark card-hover border-0 shadow">
+                        <div class="card-body py-5">
+                            <i class="fas fa-cloud-download-alt fa-3x mb-3 text-info"></i>
+                            <h3 class="card-title h5">Data Load</h3>
+                            <small class="opacity-75">Sincronizar API</small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <a href="{{ path('app_ver_categoria', {'categoriaNombre': 'Personajes'}) }}" class="text-decoration-none text-white">
+                    <div class="card text-center text-white bg-primary card-hover border-0 shadow">
+                        <div class="card-body py-5">
+                            <i class="fas fa-tags fa-3x mb-3 text-warning"></i>
+                            <h3 class="card-title h5">Categorías</h3>
+                            <small class="opacity-75">Ver Personajes</small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="card text-center text-white bg-success card-hover border-0 shadow" role="button">
+                    <div class="card-body py-5">
+                        <i class="fas fa-users fa-3x mb-3"></i>
+                        <h3 class="card-title h5">Usuarios</h3>
+                        <small class="opacity-75">Panel Control</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="card text-center text-white bg-danger card-hover border-0 shadow" role="button">
+                    <div class="card-body py-5">
+                        <i class="fas fa-chart-line fa-3x mb-3"></i>
+                        <h3 class="card-title h5">Stats</h3>
+                        <small class="opacity-75">Estadísticas</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-10px); cursor: pointer; filter: brightness(1.2); }
+        .bg-dark-blue { background-color: #0d1b2a; }
+    </style>
+{% endblock %}

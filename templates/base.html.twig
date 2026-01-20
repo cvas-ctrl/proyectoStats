@@ -15,10 +15,16 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <div class="navbar-nav">
+            <div class="navbar-nav me-auto">
                 <a class="nav-link" href="{{ path('app_ver_categoria', {'categoriaNombre': 'Personajes'}) }}">Personajes</a>
                 <a class="nav-link" href="{{ path('app_ver_categoria', {'categoriaNombre': 'Localizaciones'}) }}">Localizaciones</a>
                 <a class="nav-link" href="{{ path('app_ver_categoria', {'categoriaNombre': 'Episodios'}) }}">Episodios</a>
+            </div>
+
+            <div class="navbar-nav">
+                <a class="nav-link btn btn-outline-info btn-sm px-3 text-white" href="{{ path('admin_site') }}">
+                    Admin
+                </a>
             </div>
         </div>
     </div>

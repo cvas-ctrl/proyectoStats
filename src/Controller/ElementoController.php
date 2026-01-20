@@ -1,38 +1,33 @@
 <?php
 
 namespace App\Controller;
-
+use App\Entity\Categoria;
+use App\Entity\Elemento;
+use App\Repository\ElementoRepository;
+use App\Repository\CategoriaRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class ElementoController extends AbstractController
 {
     #[Route('/ver/{categoriaNombre}', name: 'app_ver_categoria')]
-    public function index(string $categoriaNombre, HttpClientInterface $httpClient): Response
-    {
-        $apiUrl = match (strtolower($categoriaNombre)) {
-            'personajes' => 'https://rickandmortyapi.com/api/character',
-            'localizaciones' => 'https://rickandmortyapi.com/api/location',
-            'episodios' => 'https://rickandmortyapi.com/api/episode',
-            default => null
-        };
+    public function index(
+        string $categoriaNombre,
+        ElementoRepository $elementoRepository,
+        CategoriaRepository $categoriaRepository
+    ): Response {
+        $categoria = $categoriaRepository->findOneBy(['nombre' => $categoriaNombre]);
 
-        if (!$apiUrl) {
-            throw $this->createNotFoundException('La categoría "' . $categoriaNombre . '" no es válida.');
+        if (!$categoria) {
+            throw $this->createNotFoundException('La categoría no existe');
         }
 
-        $response = $httpClient->request('GET', $apiUrl, [
-            'verify_peer' => false
-        ]);
-
-        $data = $response->toArray();
-        $elementos = $data['results'];
+        $elementos = $elementoRepository->findBy(['categoria' => $categoria]);
 
         return $this->render('elemento/index.html.twig', [
             'elementos' => $elementos,
-            'nombreCategoria' => ucfirst($categoriaNombre),
+            'nombreCategoria' => $categoriaNombre,
         ]);
     }
 }
