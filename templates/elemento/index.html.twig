@@ -13,26 +13,30 @@
             {% for el in elementos %}
                 <div class="col-md-4 col-lg-3 mb-4">
                     <div class="card h-100 shadow-sm border-0">
-                        <img src="{{ el.imagenUrl|default('https://via.placeholder.com/300x300?text=Sin+Imagen') }}"
+                        <img src="{{ el.image|default('https://via.placeholder.com/300x300?text=' ~ nombreCategoria) }}"
                              class="card-img object-fit-cover"
                              style="height: 250px;"
-                             alt="{{ el.nombre }}">
+                             alt="{{ el.name }}">
 
                         <div class="card-body">
-                            <h5 class="card-title h6 fw-bold">{{ el.nombre }}</h5>
+                            <h5 class="card-title h6 fw-bold">{{ el.name }}</h5>
                             <hr class="my-2 opacity-25">
+
                             <p class="card-text small">
                                 {% if nombreCategoria == 'Personajes' %}
                                     <span class="text-muted text-uppercase">Especie:</span>
-                                    <span class="badge bg-info text-dark">{{ el.datosExtra.species}}</span>
-                                {% else %}
+                                    <span class="badge bg-info text-dark">{{ el.species }}</span>
+                                {% elseif nombreCategoria == 'Localizaciones' %}
                                     <span class="text-muted text-uppercase">Tipo:</span>
-                                    <span class="badge bg-warning text-dark">{{ el.datosExtra.type|default('Desconocido') }}</span>
+                                    <span class="badge bg-warning text-dark">{{ el.type }}</span>
+                                {% else %}
+                                    <span class="text-muted text-uppercase">Fecha:</span>
+                                    <span class="badge bg-success text-white">{{ el.air_date }}</span>
                                 {% endif %}
                             </p>
                         </div>
                         <div class="card-footer bg-transparent border-0 pb-3">
-                            <a href="#" class="btn btn-primary btn-sm w-100 rounded-pill">Votar</a>
+                            <a href="#" class="btn btn-primary btn-sm w-100 rounded-pill">Ver detalles</a>
                         </div>
                     </div>
                 </div>
