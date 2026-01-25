@@ -1,0 +1,89 @@
+:root {
+    --rm-portal-green: #97ce4c;
+    --rm-dark-green: #204529;
+    --rm-skin: #e4a788;
+    --rm-blue: #00b0c8;
+}
+
+body {
+    background: radial-gradient(circle, #1a1a1a 0%, #0a0a0a 100%);
+    color: white;
+}
+
+.hero-section {
+    background: url('https://help.disneyplus.com/csp?id=sc_category&sys_id=64860b73db7015104d559868f9961962') no-repeat center;
+    background-size: cover;
+    border: 2px solid var(--rm-portal-green);
+    box-shadow: 0 0 30px rgba(151, 206, 76, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.rm-title {
+    font-family: 'Arial Black', sans-serif;
+    color: var(--rm-portal-green);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 3px 3px 0px #444;
+}
+
+.rm-card {
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid rgba(151, 206, 76, 0.2);
+    height: 350px;
+    background-size: cover !important;
+    background-position: center !important;
+    position: relative;
+    cursor: pointer;
+}
+
+.rm-card:hover {
+    transform: translateY(-15px) scale(1.02);
+    border-color: var(--rm-portal-green);
+    box-shadow: 0 0 25px rgba(151, 206, 76, 0.5);
+}
+
+.card-overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.9));
+    padding: 20px;
+    height: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    border-radius: 0 0 15px 15px;
+}
+
+.btn-portal {
+    background: var(--rm-portal-green);
+    color: var(--rm-dark-green);
+    font-weight: bold;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 25px;
+    transition: 0.3s;
+}
+
+.btn-portal:hover {
+    background: white;
+    box-shadow: 0 0 15px var(--rm-portal-green);
+    color: black;
+}
+
+.card-personajes { background: url('https://rickandmortyapi.com/api/character/avatar/1.jpeg'); }
+.card-localizaciones { background: url('https://rickandmortyapi.com/api/character/avatar/3.jpeg'); filter: hue-rotate(90deg); }
+.card-episodios { background: url('https://rickandmortyapi.com/api/character/avatar/12.jpeg'); filter: hue-rotate(200deg); }

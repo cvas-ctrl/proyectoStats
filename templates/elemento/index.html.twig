@@ -3,40 +3,40 @@
 {% block title %}R&M STATS{% endblock %}
 
 {% block body %}
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="fw-light">Listado de <span class="fw-bold">{{ nombreCategoria }}</span></h1>
-            <span class="badge bg-secondary">{{ elementos|length }} resultados</span>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <h1 class="text-white">Listado de <span>{{ nombreCategoria }}</span></h1>
+            <span class="badge border border-info text-info p-2">{{ elementos|length }} ENTIDADES</span>
         </div>
 
         <div class="row">
             {% for el in elementos %}
                 <div class="col-md-4 col-lg-3 mb-4">
-                    <div class="card h-100 shadow-sm border-0">
-                        <img src="{{ el.imagenUrl|default('https://via.placeholder.com/300x300?text=' ~ nombreCategoria) }}"
-                             class="card-img object-fit-cover"
-                             style="height: 250px;"
+                    <div class="card h-100 shadow-lg">
+                        <img src="{{ el.imagenUrl|default('...') }}"
+                             class="card-img-top object-fit-cover"
+                             style="height: 250px; border-bottom: 1px solid var(--rm-portal-green);"
                              alt="{{ el.nombre }}">
 
-                        <div class="card-body">
-                            <h5 class="card-title h6 fw-bold">{{ el.nombre }}</h5>
-                            <hr class="my-2 opacity-25">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title h6 fw-bold text-uppercase">{{ el.nombre }}</h5>
+                            <hr class="my-2 border-info opacity-50">
 
-                            <p class="card-text small">
-                                {% if nombreCategoria == 'Personajes' %}
-                                    <span class="text-muted text-uppercase">Especie:</span>
-                                    <span class="badge bg-info text-dark">{{ el.datosExtra['species']|default('Desconocida') }}</span>
-                                {% elseif nombreCategoria == 'Localizaciones' %}
-                                    <span class="text-muted text-uppercase">Tipo:</span>
-                                    <span class="badge bg-warning text-dark">{{ el.datosExtra['type']|default('Desconocida') }}</span>
-                                {% else %}
-                                    <span class="text-muted text-uppercase">Fecha:</span>
-                                    <span class="badge bg-success text-white">{{ el.datosExtra['air_date']|default('Sin fecha') }}</span>
-                                {% endif %}
-                            </p>
-                        </div>
-                        <div class="card-footer bg-transparent border-0 pb-3">
-                            <a href="#" class="btn btn-primary btn-sm w-100 rounded-pill">Ver detalles</a>
+                            <div class="mt-auto">
+                                <p class="card-text small mb-3">
+                                    {% if nombreCategoria == 'Personajes' %}
+                                        <span class="text-muted d-block mb-1 small">ESPECIE:</span>
+                                        <span class="badge rounded-pill bg-dark border border-info text-info">{{ el.datosExtra['species']|default('Desconocida') }}</span>
+                                    {% elseif nombreCategoria == 'Localizaciones' %}
+                                        <span class="text-muted d-block mb-1 small">TIPO:</span>
+                                        <span class="badge rounded-pill bg-dark border border-warning text-warning">{{ el.datosExtra['type']|default('Desconocida') }}</span>
+                                    {% else %}
+                                        <span class="text-muted d-block mb-1 small">EMISIÓN:</span>
+                                        <span class="badge rounded-pill bg-dark border border-success text-success">{{ el.datosExtra['air_date']|default('Sin fecha') }}</span>
+                                    {% endif %}
+                                </p>
+                                <a href="#" class="btn btn-primary btn-sm w-100 rounded-pill">EXPEDIENTE</a>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inicio - Rick & Morty Stats{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/style_home.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container py-5"> <div class="hero-section p-5 rounded-4 mb-5 text-center"> <div class="hero-content"> <h1 class="display-3 fw-bold rm-title">Wubba Lubba Dub Dub!</h1> <p class="fs-4 mt-3" style="color: var(--rm-blue);">Estadísticas interdimensionales del universo C-137</p> <div class="mx-auto" style="width: 100px; height: 4px; background: var(--rm-portal-green);"></div> </div> </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card rm-card rounded-4 card-personajes shadow-lg" onclick="location.href='{{ path('app_ver_categoria', {'categoriaNombre': 'Personajes'}) }}'">
+                    <div class="card-overlay">
+                        <h3 class="fw-bold">Personajes</h3>
+                        <p class="small text-light">Explora todas las especies y estados vitales.</p>
+                        <a href="{{ path('app_ver_categoria', {'categoriaNombre': 'Personajes'}) }}" class="btn btn-portal">Acceder</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card rm-card rounded-4 card-localizaciones shadow-lg" onclick="location.href='{{ path('app_ver_categoria', {'categoriaNombre': 'Localizaciones'}) }}'">
+                    <div class="card-overlay">
+                        <h3 class="fw-bold">Dimensiones</h3>
+                        <p class="small text-light">Viaja por planetas, naves y realidades.</p>
+                        <a href="{{ path('app_ver_categoria', {'categoriaNombre': 'Localizaciones'}) }}" class="btn btn-portal">Explorar</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card rm-card rounded-4 card-episodios shadow-lg" onclick="location.href='{{ path('app_ver_categoria', {'categoriaNombre': 'Episodios'}) }}'">
+                    <div class="card-overlay">
+                        <h3 class="fw-bold">Episodios</h3>
+                        <p class="small text-light">Revive cada momento de la aventura.</p>
+                        <a href="{{ path('app_ver_categoria', {'categoriaNombre': 'Episodios'}) }}" class="btn btn-portal">Ver Guía</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
