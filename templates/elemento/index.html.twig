@@ -1,42 +1,29 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}R&M STATS{% endblock %}
-
 {% block body %}
     <div class="container mt-4">
-        <div class="d-flex justify-content-between align-items-center mb-5">
-            <h1 class="text-white">Listado de <span>{{ nombreCategoria }}</span></h1>
-            <span class="badge border border-info text-info p-2">{{ elementos|length }} ENTIDADES</span>
-        </div>
+        <h1 class="text-white mb-5">Listado de <span class="text-info">{{ nombreCategoria }}</span></h1>
 
         <div class="row">
             {% for el in elementos %}
-                <div class="col-md-4 col-lg-3 mb-4">
-                    <div class="card h-100 shadow-lg">
-                        <img src="{{ el.imagenUrl|default('...') }}"
-                             class="card-img-top object-fit-cover"
-                             style="height: 250px; border-bottom: 1px solid var(--rm-portal-green);"
-                             alt="{{ el.nombre }}">
-
+                <div class="col-md-3 mb-4">
+                    <div class="card h-100 bg-dark text-white border-info shadow">
+                        <img src="{{ el.imagenUrl }}" class="card-img-top" style="height: 200px; object-fit: cover;">
                         <div class="card-body d-flex flex-column">
-                            <h5 class="card-title h6 fw-bold text-uppercase">{{ el.nombre }}</h5>
-                            <hr class="my-2 border-info opacity-50">
+                            <h5 class="card-title">{{ el.nombre }}</h5>
 
-                            <div class="mt-auto">
-                                <p class="card-text small mb-3">
-                                    {% if nombreCategoria == 'Personajes' %}
-                                        <span class="text-muted d-block mb-1 small">ESPECIE:</span>
-                                        <span class="badge rounded-pill bg-dark border border-info text-info">{{ el.datosExtra['species']|default('Desconocida') }}</span>
-                                    {% elseif nombreCategoria == 'Localizaciones' %}
-                                        <span class="text-muted d-block mb-1 small">TIPO:</span>
-                                        <span class="badge rounded-pill bg-dark border border-warning text-warning">{{ el.datosExtra['type']|default('Desconocida') }}</span>
-                                    {% else %}
-                                        <span class="text-muted d-block mb-1 small">EMISIÓN:</span>
-                                        <span class="badge rounded-pill bg-dark border border-success text-success">{{ el.datosExtra['air_date']|default('Sin fecha') }}</span>
-                                    {% endif %}
-                                </p>
-                                <a href="#" class="btn btn-primary btn-sm w-100 rounded-pill">EXPEDIENTE</a>
-                            </div>
+                            <form action="{{ path('app_valorar', {'id': el.id}) }}" method="POST" class="mb-2">
+                                <div class="input-group input-group-sm">
+                                    <label class="input-group-text bg-dark border-info text-info small" for="puntuacion-{{ el.id }}">⭐</label>
+                                    <select name="puntuacion" class="form-select bg-dark text-white border-info" id="puntuacion-{{ el.id }}">
+                                        {% for i in 10..1 %}
+                                            <option value="{{ i }}">{{ i }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button type="submit" class="btn btn-outline-info">VOTAR</button>
+                                </div>
+                            </form>
+                            <a href="#" class="btn btn-primary btn-sm rounded-pill">EXPEDIENTE</a>
                         </div>
                     </div>
                 </div>

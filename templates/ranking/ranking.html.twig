@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container py-5">
+        <h1 class="text-center text-white mb-5">TOP 10 <span class="text-info">MULTIVERSO</span></h1>
+
+        <div class="card bg-dark border-info shadow-lg">
+            <table class="table table-dark table-hover mb-0">
+                <thead class="text-info">
+                <tr>
+                    <th class="ps-4">#</th>
+                    <th>ELEMENTO</th>
+                    <th class="text-center">SCORE</th>
+                    <th class="text-center">VOTOS</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for el in elementos %}
+                    <tr class="align-middle">
+                        <td class="ps-4 fw-bold text-muted">{{ loop.index }}</td>
+                        <td>
+                            <img src="{{ el['imagenUrl'] }}" width="40" height="40" class="rounded border border-info me-2">
+                            {{ el['nombre'] }}
+                        </td>
+                        <td class="text-center text-warning">⭐ {{ el['media']|number_format(2) }}</td>
+                        <td class="text-center small text-muted">{{ el['totalVotos'] }} usuarios</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
