@@ -26,6 +26,16 @@
 
         <div class="collapse navbar-collapse w-100 order-3" id="navbarNav">
 
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link text-white d-flex align-items-center gap-2 px-3 rounded-pill border border-warning border-opacity-25"
+                       href="{{ path('app_ranking') }}"
+                       style="background: rgba(255, 193, 7, 0.05); font-family: 'Arial Black', sans-serif; font-size: 0.8rem;">
+                        <span style="color: #ffc107;">⭐</span> RANKING GLOBAL
+                    </a>
+                </li>
+            </ul>
+
             <ul class="navbar-nav ms-auto align-items-center gap-3">
                 {% if app.user %}
                     <li class="nav-item dropdown">
@@ -37,7 +47,15 @@
                             <span style="color: #97ce4c;">ID:</span> {{ app.user.username|upper }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow-lg border-info animate slideIn" style="background: #1a1a1a;">
-                            <li><a class="dropdown-item py-2" href="{{ path('admin_site') }}">⚙️ PANEL ADMIN</a></li>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <li><a class="dropdown-item py-2 text-bg-success" href="{{ path('admin_site') }}">PANEL ADMIN</a></li>
+                                <li><hr class="dropdown-divider bg-info"></li>
+                            {% endif %}
+                            <li>
+                                <a class="dropdown-item py-2 text-bg-success" href="{{ path('app_ranking_personal') }}">
+                                    MI RANKING
+                                </a>
+                            </li>
                             <li><hr class="dropdown-divider bg-info"></li>
                             <li><a class="dropdown-item text-danger fw-bold py-2" href="{{ path('app_logout') }}">CERRAR SESIÓN</a></li>
                         </ul>

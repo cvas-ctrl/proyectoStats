@@ -30,11 +30,12 @@ final class ValoracionController extends AbstractController
         $valoracion->setUsuario($user);
         $valoracion->setElemento($elemento);
         $valoracion->setPuntuacion((int)$puntuacion);
+        $valoracion->setFechaCreacion(new \DateTimeImmutable());
 
         $em->persist($valoracion);
         $em->flush();
 
-        $this->addFlash('success', '¡Valoración guardada para ' . $elemento->getNombre() . '!');
+        $this->addFlash('success', 'Valoración guardada para ' . $elemento->getNombre() );
 
         return $this->redirect($request->headers->get('referer'));
     }

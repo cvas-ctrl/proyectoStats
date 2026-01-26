@@ -23,7 +23,10 @@
                                     <button type="submit" class="btn btn-outline-info">VOTAR</button>
                                 </div>
                             </form>
-                            <a href="#" class="btn btn-primary btn-sm rounded-pill">EXPEDIENTE</a>
+                            <a href="{{ path('app_elemento_detalle', {'id': el.id}) }}"
+                               class="btn btn-primary btn-sm rounded-pill">
+                                EXPEDIENTE
+                            </a>
                         </div>
                     </div>
                 </div>

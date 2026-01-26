@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container py-5">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <h1 class="text-white m-0">Mis <span class="text-success">{{ categoriaActual }}</span> puntuados</h1>
+
+            <div class="dropdown">
+                <button class="btn btn-outline-success dropdown-toggle rounded-pill px-4" type="button" data-bs-toggle="dropdown">
+                    Cambiar Categoría
+                </button>
+                <ul class="dropdown-menu dropdown-menu-dark border-success">
+                    {% for cat in categorias %}
+                        <li>
+                            <a class="dropdown-item {{ cat.nombre == categoriaActual ? 'active' : '' }}"
+                               href="{{ path('app_ranking_personal', {'categoria': cat.nombre}) }}">
+                                {{ cat.nombre }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="card bg-dark border-success shadow-lg">
+            <table class="table table-dark table-hover mb-0 text-white">
+                <thead class="text-success">
+                <tr>
+                    <th class="ps-4">#</th>
+                    <th>NOMBRE</th>
+                    <th class="text-center">MI NOTA</th>
+                    <th class="text-center">FECHA</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for v in votos %}
+                    <tr class="align-middle">
+                        <td class="ps-4 fw-bold text-muted">{{ loop.index }}</td>
+                        <td>
+                            <img src="{{ v['imagenUrl'] }}" width="50" height="50" class="rounded border border-success me-3">
+                            <span class="fw-bold">{{ v['nombre'] }}</span>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge bg-success text-white fs-6">⭐ {{ v['nota'] }}</span>
+                        </td>
+                        <td class="text-center small text-muted">
+                            {{ v['fechaCreacion']|date('d/m/Y') }}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center py-5 text-muted">
+                            Aún no has puntuado nada en esta categoría. ¡Empieza a valorar el multiverso!
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

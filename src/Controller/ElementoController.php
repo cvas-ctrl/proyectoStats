@@ -27,7 +27,15 @@ final class ElementoController extends AbstractController
 
         return $this->render('elemento/index.html.twig', [
             'elementos' => $elementos,
-            'nombreCategoria' => $categoriaNombre,
+            'nombreCategoria' => $categoriaNombre
+        ]);
+    }
+
+    #[Route('/elemento/{id}', name: 'app_elemento_detalle')]
+    public function detalle(Elemento $elemento): Response
+    {
+        return $this->render('elemento/detalle.html.twig', [
+            'el' => $elemento
         ]);
     }
 }

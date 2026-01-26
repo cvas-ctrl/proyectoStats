@@ -55,7 +55,14 @@ final class AdminController extends AbstractController
 
                 $elemento->setNombre($item['name']);
 
-                $imageUrl = $item['image'] ?? 'https://via.placeholder.com/300?text=' . $nombreCat;
+                if (isset($item['image'])) {
+                    $imageUrl = $item['image'];
+                } else {
+                    $imageUrl = match ($nombreCat) {
+                        'Localizaciones' => 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=800&auto=format',
+                        'Episodios'      => 'https://images.unsplash.com/photo-1614728263952-84ea256f9679?w=800&auto=format',
+                    };
+                }
                 $elemento->setImagenUrl($imageUrl);
 
                 $extra = [];
@@ -72,7 +79,7 @@ final class AdminController extends AbstractController
 
         $entityManager->flush();
 
-        $this->addFlash('success', 'Sincronizado');
+        $this->addFlash('success', 'Sincronización interdimensional completada con éxito');
 
         return $this->redirectToRoute('admin_site');
     }
