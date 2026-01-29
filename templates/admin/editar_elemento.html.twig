@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container py-5 text-white">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <a href="{{ path('admin_gestion') }}" class="btn btn-outline-secondary mb-4">
+                    <i class="fas fa-arrow-left"></i> Volver al panel
+                </a>
+
+                <div class="card bg-dark border-warning shadow-lg p-4">
+                    <h2 class="h4 text-warning mb-4">Editando {{ elemento.categoria.nombre }}: {{ elemento.nombre }}</h2>
+
+                    <form method="POST">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nombre</label>
+                                <input type="text" name="nombre" value="{{ elemento.nombre }}" class="form-control bg-secondary text-white border-0" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Categoría</label>
+                                <select name="categoria_id" class="form-select bg-secondary text-white border-0" required>
+                                    {% for c in categorias %}
+                                        <option value="{{ c.id }}" {{ c.id == elemento.categoria.id ? 'selected' : '' }}>{{ c.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">URL Imagen</label>
+                            <input type="url" name="imagen_url" value="{{ elemento.imagenUrl }}" class="form-control bg-secondary text-white border-0" required>
+                        </div>
+
+                        <div class="p-3 mb-4 rounded" style="background: rgba(255,193,7,0.05); border: 1px dashed #ffc107;">
+                            <h5 class="text-warning h6 mb-3"><i class="fas fa-database"></i> Datos Específicos del Expediente</h5>
+                            <div class="row">
+
+                                {% if elemento.categoria.nombre == 'Personajes' %}
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label small text-muted">Especie</label>
+                                        <input type="text" name="extra[species]" value="{{ elemento.datosExtra.species|default('') }}" class="form-control bg-dark text-white border-warning">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label small text-muted">Estado (Status)</label>
+                                        <input type="text" name="extra[status]" value="{{ elemento.datosExtra.status|default('') }}" class="form-control bg-dark text-white border-warning">
+                                    </div>
+
+                                {% elseif elemento.categoria.nombre == 'Localizaciones' %}
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label small text-muted">Tipo</label>
+                                        <input type="text" name="extra[type]" value="{{ elemento.datosExtra.type|default('') }}" class="form-control bg-dark text-white border-warning">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label small text-muted">Dimensión</label>
+                                        <input type="text" name="extra[dimension]" value="{{ elemento.datosExtra.dimension|default('') }}" class="form-control bg-dark text-white border-warning">
+                                    </div>
+
+                                {% elseif elemento.categoria.nombre == 'Episodios' %}
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label small text-muted">Fecha Emisión (Air Date)</label>
+                                        <input type="text" name="extra[air_date]" value="{{ elemento.datosExtra.air_date|default('') }}" class="form-control bg-dark text-white border-warning">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label small text-muted">Código Episodio (Ej: S01E01)</label>
+                                        <input type="text" name="extra[episode]" value="{{ elemento.datosExtra.episode|default('') }}" class="form-control bg-dark text-white border-warning">
+                                    </div>
+                                {% endif %}
+
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-warning w-100 fw-bold">GUARDAR CAMBIOS EN EL EXPEDIENTE</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

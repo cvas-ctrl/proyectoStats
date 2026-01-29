@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container py-5 text-white">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <a href="{{ path('admin_gestion') }}" class="btn btn-outline-secondary mb-4">Volver</a>
+
+                <div class="card bg-dark border-info shadow p-4">
+                    <h2 class="h4 text-info mb-4">Editar Categoría: {{ categoria.nombre }}</h2>
+
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" name="nombre" value="{{ categoria.nombre }}" class="form-control bg-secondary text-white border-0" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">URL Imagen de Portada</label>
+                            <input type="url" name="imagen_url" value="{{ categoria.imagenUrl }}" class="form-control bg-secondary text-white border-0" required>
+                        </div>
+
+                        <div class="mb-4 text-center">
+                            <p class="small text-muted">Vista previa actual:</p>
+                            <img src="{{ categoria.imagenUrl }}" class="rounded border border-info" style="height: 100px; object-fit: cover;">
+                        </div>
+
+                        <button type="submit" class="btn btn-info w-100 fw-bold">ACTUALIZAR CATEGORÍA</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -20,8 +20,8 @@ class Categoria
     #[ORM\Column(length: 100)]
     private ?string $nombre = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $descripcion = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $imagenUrl = null;
 
     /**
      * @var Collection<int, Elemento>
@@ -51,15 +51,14 @@ class Categoria
         return $this;
     }
 
-    public function getDescripcion(): ?string
+    public function getImagenUrl(): ?string
     {
-        return $this->descripcion;
+        return $this->imagenUrl;
     }
 
-    public function setDescripcion(?string $descripcion): static
+    public function setImagenUrl(?string $imagenUrl): self
     {
-        $this->descripcion = $descripcion;
-
+        $this->imagenUrl = $imagenUrl;
         return $this;
     }
 
