@@ -56,7 +56,14 @@ final class AdminController extends AbstractController
 
                 $elemento->setNombre($item['name']);
 
-                $imageUrl = $item['image'] ?? null;
+                if (isset($item['image'])) {
+                    $imageUrl = $item['image'];
+                } else {
+                    $imageUrl = match ($nombreCat) {
+                        'Localizaciones' => 'https://images5.alphacoders.com/633/thumb-1920-633256.jpg',
+                        'Episodios'      => 'https://images5.alphacoders.com/133/thumb-1920-1335149.jpg'
+                    };
+                }
                 $elemento->setImagenUrl($imageUrl);
 
                 $extra = [];
@@ -72,7 +79,7 @@ final class AdminController extends AbstractController
         }
 
         $entityManager->flush();
-        $this->addFlash('success', 'Sincronización completada');
+        $this->addFlash('success', 'Sincronización completada con imágenes de respaldo');
 
         return $this->redirectToRoute('admin_site');
     }
@@ -172,5 +179,97 @@ final class AdminController extends AbstractController
         return $this->render('admin/editar_categoria.html.twig', [
             'categoria' => $categoria
         ]);
+    }
+
+    #[Route('/admin/stats', name: 'admin_stats')]
+    public function stats(EntityManagerInterface $em): Response
+    {
+        $topElementos = $em->createQuery(
+            'SELECT e.nombre, e.imagenUrl, c.nombre as catNombre,
+                    AVG(v.puntuacion) as promedio,
+                    COUNT(v.id) as totalVotos
+             FROM App\Entity\Valoracion v
+             JOIN v.elemento e
+             JOIN e.categoria c
+             GROUP BY e.id, e.nombre, e.imagenUrl, catNombre
+             ORDER BY promedio DESC'
+        )
+            ->setMaxResults(10)
+            ->getResult();
+
+        $categorias = $em->getRepository(Categoria::class)->findAll();
+
+        return $this->render('admin/stats.html.twig', [
+            'topElementos' => $topElementos,
+            'categorias' => $categorias
+        ]);
+    }
+
+    #[Route('/admin/usuarios', name: 'admin_usuarios')]
+    public function usuarios(EntityManagerInterface $em): Response
+    {
+        $usuarios = $em->getRepository(\App\Entity\User::class)->findAll();
+
+        return $this->render('admin/usuarios.html.twig', [
+            'usuarios' => $usuarios
+        ]);
+    }
+
+    #[Route('/admin/usuarios/rol/{id}', name: 'admin_user_rol')]
+    public function cambiarRol(\App\Entity\User $user, EntityManagerInterface $em): Response
+    {
+        $roles = $user->getRoles();
+
+        if (in_array('ROLE_ADMIN', $roles)) {
+            $user->setRoles(['ROLE_USER']);
+            $this->addFlash('success', 'Usuario degradado');
+        } else {
+            $user->setRoles(['ROLE_ADMIN']);
+            $this->addFlash('success', 'Nuevo Administrador');
+        }
+
+        $em->flush();
+        return $this->redirectToRoute('admin_usuarios');
+    }
+
+    #[Route('/admin/usuarios/borrar/{id}', name: 'admin_user_borrar')]
+    public function borrarUsuario(\App\Entity\User $user, EntityManagerInterface $em): Response
+    {
+        if ($user === $this->getUser()) {
+            $this->addFlash('danger', 'No puedes eliminarte.');
+            return $this->redirectToRoute('admin_usuarios');
+        }
+
+        $em->remove($user);
+        $em->flush();
+
+        $this->addFlash('success', 'Usuario eliminado.');
+        return $this->redirectToRoute('admin_usuarios');
+    }
+
+    #[Route('/admin/comentarios', name: 'admin_comentarios')]
+    public function listarComentarios(EntityManagerInterface $em): Response
+    {
+        $query = $em->createQuery(
+            'SELECT v FROM App\Entity\Valoracion v
+         WHERE v.comentario IS NOT NULL
+         AND v.comentario != \'\'
+         ORDER BY v.fechaCreacion DESC'
+        );
+        $comentarios = $query->getResult();
+
+        return $this->render('admin/comentarios.html.twig', [
+            'comentarios' => $comentarios
+        ]);
+    }
+
+    #[Route('/admin/comentario/borrar/{id}', name: 'admin_comentario_borrar')]
+    public function borrarComentario(\App\Entity\Valoracion $valoracion, EntityManagerInterface $em): Response
+    {
+        $em->remove($valoracion);
+        $em->flush();
+
+        $this->addFlash('success', 'Reseña eliminada del multiverso.');
+        return $this->redirectToRoute('admin_comentarios');
     }
 }

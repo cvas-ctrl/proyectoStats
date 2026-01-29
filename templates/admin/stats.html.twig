@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container py-5 text-white">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-danger mb-0"><i class="fas fa-chart-pie"></i> Estadísticas Globales</h2>
+
+            <a href="{{ path('admin_comentarios') }}" class="btn btn-info shadow-sm fw-bold">
+                <i class="fas fa-comments me-2"></i> MODERAR COMENTARIOS
+            </a>
+        </div>
+
+        <div class="row mb-5 g-3">
+            {% for cat in categorias %}
+                <div class="col-md-4">
+                    <div class="card bg-dark border-danger p-3 text-center shadow">
+                        <h4 class="h6 text-uppercase text-secondary">{{ cat.nombre }}</h4>
+                        <span class="display-5 fw-bold text-danger">{{ cat.elementos|length }}</span>
+                        <small class="text-muted">registrados</small>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="card bg-dark border-danger shadow">
+            <div class="card-header bg-danger text-white fw-bold d-flex justify-content-between align-items-center">
+                <span>TOP 10 MEJOR VALORADOS (GENERAL)</span>
+                <i class="fas fa-star"></i>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-dark table-hover align-middle mb-0">
+                    <thead class="table-secondary text-dark">
+                    <tr>
+                        <th class="ps-4">Ranking</th>
+                        <th>Elemento</th>
+                        <th>Categoría</th>
+                        <th class="text-center">Puntuación</th>
+                        <th class="text-center">Votos</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for el in topElementos %}
+                        <tr>
+                            <td class="ps-4 fw-bold fs-5">#{{ loop.index }}</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <img src="{{ el.imagenUrl }}"
+                                         width="60"
+                                         height="60"
+                                         class="rounded shadow-sm border border-secondary me-3"
+                                         style="object-fit: cover;">
+                                    <span class="fw-bold">{{ el.nombre }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-outline-light border text-light">{{ el.catNombre }}</span>
+                            </td>
+                            <td class="text-warning fw-bold text-center fs-5">
+                                {{ el.promedio|number_format(1) }} ⭐
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-secondary opacity-75">{{ el.totalVotos }} votos</span>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-muted italic">
+                                <i class="fas fa-info-circle"></i> Aún no hay elementos valorados.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

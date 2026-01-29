@@ -5,43 +5,82 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="card bg-dark border-info shadow-lg text-white overflow-hidden">
-                    <img src="{{ el.imagenUrl }}" class="img-fluid" alt="{{ el.nombre }}">
-                    <div class="card-body">
+                    <img src="{{ el.imagenUrl }}" class="img-fluid" alt="{{ el.nombre }}" style="width: 100%; height: 350px; object-fit: cover;">
+                    <div class="card-body text-center">
                         <h2 class="h4 text-info">{{ el.nombre }}</h2>
+                        <span class="badge bg-info text-white mb-3">{{ el.categoria.nombre }}</span>
                         <hr class="bg-info">
 
-                        <form action="{{ path('app_valorar', {'id': el.id}) }}" method="POST">
-                            <label class="form-label small">¿Qué nota le das?</label>
-                            <div class="input-group">
-                                <select name="puntuacion" class="form-select bg-dark text-white border-info">
-                                    {% for i in 10..1 %}
-                                        <option value="{{ i }}">{{ i }}</option>
-                                    {% endfor %}
-                                </select>
-                                <button class="btn btn-info">VOTAR</button>
-                            </div>
-                        </form>
+                        <div class="py-2">
+                            <h3 class="h1 text-warning mb-0">{{ el.puntuacionPromedio|number_format(1) }} ⭐</h3>
+                            <small class="text-muted">{{ el.totalValoraciones }} valoraciones totales</small>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-8">
-                <div class="card bg-dark text-white border-info p-4 mb-4">
-                    <h3 class="text-info border-bottom border-info pb-2">EXPEDIENTE INTERDIMENSIONAL</h3>
+                <div class="card bg-dark text-white border-info p-4 mb-4 shadow">
+                    <h3 class="text-info border-bottom border-info pb-2 text-uppercase">
+                        <i class="fas fa-folder-open me-2"></i>Expediente Interdimensional
+                    </h3>
                     <div class="row mt-3">
                         {% for clave, valor in el.datosExtra %}
                             <div class="col-6 mb-3">
-                                <span class="text-muted text-uppercase small d-block">{{ clave }}</span>
-                                <span class="fs-5">{{ valor|capitalize }}</span>
+                                <span class="text-muted text-uppercase small d-block" style="letter-spacing: 1px;">{{ clave }}</span>
+                                <span class="fs-5 text-light">{{ valor|capitalize }}</span>
                             </div>
                         {% endfor %}
                     </div>
                 </div>
 
-                <div class="card bg-dark text-white border-secondary p-4">
-                    <h4 class="h5 mb-3">Comentarios de la comunidad</h4>
-                    <textarea class="form-control bg-dark text-white border-secondary mb-3" placeholder="Escribe tu teoría sobre este elemento..."></textarea>
-                    <button class="btn btn-outline-secondary btn-sm">Enviar comentario</button>
+                <div class="card bg-dark text-white border-secondary p-4 shadow">
+                    <h4 class="h5 mb-4 text-info"><i class="fas fa-comments me-2"></i>Comunidad</h4>
+
+                    <form action="{{ path('app_valorar', {'id': el.id}) }}" method="POST" class="mb-5 bg-black bg-opacity-25 p-3 rounded border border-secondary">
+                        <label class="form-label small fw-bold">DEJA TU VALORACIÓN:</label>
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-3">
+                                <select name="puntuacion" class="form-select bg-dark text-white border-info" required>
+                                    <option value="" disabled selected>Nota...</option>
+                                    {% for i in 10..1 %}
+                                        <option value="{{ i }}">{{ i }} ⭐</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-9">
+                                <textarea name="comentario" class="form-control bg-dark text-white border-secondary" placeholder="Escribe tu reseña o teoría aquí..." rows="2"></textarea>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-info w-100 fw-bold">ENVIAR VALORACIÓN</button>
+                    </form>
+
+                    <div class="comentarios-scroll" style="max-height: 400px; overflow-y: auto;">
+                        {% for val in el.valoraciones|reverse %}
+                            {% if val.comentario %}
+                                <div class="mb-3 p-3 rounded bg-black bg-opacity-50 border-start border-3 border-info">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-info text-dark rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 30px; height: 30px; font-size: 0.8rem; fw-bold">
+                                                {{ val.usuario.email|first|upper }}
+                                            </div>
+                                            <span class="text-info small fw-bold">{{ val.usuario.email }}</span>
+                                        </div>
+                                        <span class="badge bg-warning text-white">{{ val.puntuacion }} ⭐</span>
+                                    </div>
+                                    <p class="mb-1 small text-light italic">"{{ val.comentario }}"</p>
+                                    <small class="text-muted d-block text-end" style="font-size: 0.7rem;">
+                                        {{ val.fechaCreacion|date('d M, Y') }}
+                                    </small>
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="text-center py-4 text-muted">
+                                <i class="fas fa-ghost fa-2x mb-2"></i>
+                                <p class="small">Este expediente está vacío. ¡Sé el primero en comentar!</p>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </div>

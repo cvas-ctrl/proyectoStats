@@ -15,12 +15,10 @@ final class ValoracionController extends AbstractController
     public function valorar(Elemento $elemento, Request $request, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
-        if (!$user) {
-            $this->addFlash('danger', 'Debes estar logueado para votar.');
-            return $this->redirectToRoute('app_login');
-        }
+        if (!$user) return $this->redirectToRoute('app_login');
 
         $puntuacion = $request->request->get('puntuacion');
+        $textoComentario = $request->request->get('comentario');
 
         $valoracion = $em->getRepository(Valoracion::class)->findOneBy([
             'usuario' => $user,
@@ -30,12 +28,29 @@ final class ValoracionController extends AbstractController
         $valoracion->setUsuario($user);
         $valoracion->setElemento($elemento);
         $valoracion->setPuntuacion((int)$puntuacion);
+        $valoracion->setComentario($textoComentario);
         $valoracion->setFechaCreacion(new \DateTimeImmutable());
 
         $em->persist($valoracion);
         $em->flush();
 
-        $this->addFlash('success', 'Valoración guardada para ' . $elemento->getNombre() );
+        $todasLasValoraciones = $elemento->getValoraciones();
+        $totalVotos = count($todasLasValoraciones);
+        $sumaPuntos = 0;
+
+        foreach ($todasLasValoraciones as $v) {
+            $sumaPuntos += $v->getPuntuacion();
+        }
+
+        $promedio = $totalVotos > 0 ? $sumaPuntos / $totalVotos : 0;
+
+        $elemento->setTotalValoraciones($totalVotos);
+        $elemento->setPuntuacionPromedio($promedio);
+
+        $em->persist($elemento);
+        $em->flush();
+
+        $this->addFlash('success', 'Valoración guardada para ' . $elemento->getNombre());
 
         return $this->redirect($request->headers->get('referer'));
     }

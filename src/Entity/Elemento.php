@@ -43,7 +43,7 @@ class Elemento
      * @var Collection<int, Valoracion>
      */
     #[ORM\OneToMany(targetEntity: Valoracion::class, mappedBy: 'elemento')]
-    private Collection $valoracions;
+    private Collection $valoraciones;
 
     /**
      * @var Collection<int, RankingElemento>
@@ -53,7 +53,7 @@ class Elemento
 
     public function __construct()
     {
-        $this->valoracions = new ArrayCollection();
+        $this->valoraciones = new ArrayCollection();
         $this->rankingElementos = new ArrayCollection();
     }
 
@@ -149,15 +149,15 @@ class Elemento
     /**
      * @return Collection<int, Valoracion>
      */
-    public function getValoracions(): Collection
+    public function getValoraciones(): Collection
     {
-        return $this->valoracions;
+        return $this->valoraciones;
     }
 
     public function addValoracion(Valoracion $valoracion): static
     {
-        if (!$this->valoracions->contains($valoracion)) {
-            $this->valoracions->add($valoracion);
+        if (!$this->valoraciones->contains($valoracion)) {
+            $this->valoraciones->add($valoracion);
             $valoracion->setElemento($this);
         }
 
@@ -166,7 +166,7 @@ class Elemento
 
     public function removeValoracion(Valoracion $valoracion): static
     {
-        if ($this->valoracions->removeElement($valoracion)) {
+        if ($this->valoraciones->removeElement($valoracion)) {
             // set the owning side to null (unless already changed)
             if ($valoracion->getElemento() === $this) {
                 $valoracion->setElemento(null);

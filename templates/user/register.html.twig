@@ -1,34 +1,49 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Registro de Ciudadano{% endblock %}
 
 {% block body %}
-    <div class="container mt-5">
-        <h2>Register</h2>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card bg-dark text-white border-success shadow-lg">
+                    <div class="card-header bg-success text-white text-center fw-bold py-3">
+                        <h2 class="h4 mb-0 text-uppercase">Registro de Nuevo Morty</h2>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="POST">
+                            <div class="mb-4">
+                                <label for="username" class="form-label text-success small text-uppercase fw-bold">Nombre de Usuario</label>
+                                <input type="text" class="form-control bg-dark text-white border-success" id="username" name="username" placeholder="Ej: RickSanchezC137" required>
+                            </div>
 
-        <form method="POST">
-            <div class="mb-3">
-                <label for="username" class="form-label">Username</label>
-                <input type="text" class="form-control" id="username" name="username" required>
-            </div>
-            <div class="mb-3">
-                <label for="email" class="form-label">Email address</label>
-                <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" id="password"  name="password" class="form-control" aria-describedby="passwordHelpBlock">
-                <div id="passwordHelpBlock" class="form-text">
-                    Your password must be 8-20 characters long, contain letters and numbers, and must not contain
-                    spaces, special characters, or emoji.
+                            <div class="mb-4">
+                                <label for="email" class="form-label text-success small text-uppercase fw-bold">Correo Electrónico</label>
+                                <input type="email" class="form-control bg-dark text-white border-success" id="email" name="email" placeholder="nombre@dimension.com" required>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="password" class="form-label text-success small text-uppercase fw-bold">Password</label>
+                                <input type="password" id="password" name="password" class="form-control bg-dark text-white border-success mb-2" required>
+                                <div id="passwordHelpBlock" class="text-muted" style="font-size: 0.75rem;">
+                                    <i class="fas fa-info-circle me-1"></i> Entre 8 y 20 caracteres, letras y números.
+                                </div>
+                            </div>
+
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-success fw-bold py-2 text-white shadow">
+                                    <i class="fas fa-user-plus me-2"></i>GUARDAR CIUDADANO
+                                </button>
+                            </div>
+
+                            <div class="text-center mt-3">
+                                <span class="text-muted small">¿Ya eres de los nuestros?</span>
+                                <a href="{{ path('app_login') }}" class="text-success small text-decoration-none ms-1">Inicia Sesión</a>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-
-            <div class="container d-flex flex-column justify-content-start align-items-center ">
-                <button type="submit" class="btn bg-dark-blue mt-3" style="color: #FFFFFF">Save</button>
-            </div>
-
-
-        </form>
+        </div>
     </div>
 {% endblock %}
