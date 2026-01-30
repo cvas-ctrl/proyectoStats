@@ -22,8 +22,16 @@ final class ElementoController extends AbstractController
         if (!$categoria) {
             throw $this->createNotFoundException('La categoría no existe');
         }
+        if (in_array($categoriaNombre, ['Temporadas', 'Episodios'])) {
+            $criterioOrden = ['nombre' => 'ASC'];
+        } else {
+            $criterioOrden = ['id' => 'ASC'];
+        }
 
-        $elementos = $elementoRepository->findBy(['categoria' => $categoria]);
+        $elementos = $elementoRepository->findBy(
+            ['categoria' => $categoria],
+            $criterioOrden
+        );
 
         return $this->render('elemento/index.html.twig', [
             'elementos' => $elementos,

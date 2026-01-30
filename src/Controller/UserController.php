@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Repository\CategoriaRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,6 +44,20 @@ final class UserController extends AbstractController
 
 
         return $this->render('user/register.html.twig', [
+        ]);
+    }
+
+    #[Route('/perfil', name: 'app_perfil')]
+    public function perfil(CategoriaRepository $catRepo): Response
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        return $this->render('user/perfil.html.twig', [
+            'user' => $user,
+            'categorias' => $catRepo->findAll(),
         ]);
     }
 }

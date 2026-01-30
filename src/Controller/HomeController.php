@@ -10,10 +10,12 @@ use Symfony\Component\Routing\Attribute\Route;
 final class HomeController extends AbstractController
 {
     #[Route('/home', name: 'app_home')]
-    public function index(CategoriaRepository $repo): Response
+    public function home(CategoriaRepository $categoriaRepository): Response
     {
+        $categorias = $categoriaRepository->findBy([], ['nombre' => 'ASC']);
+
         return $this->render('home/home.html.twig', [
-            'categorias' => $repo->findAll(),
+            'categorias' => $categorias
         ]);
     }
 }

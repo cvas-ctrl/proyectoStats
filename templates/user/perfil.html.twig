@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mi Perfil{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card bg-dark text-white border-success shadow-lg">
+                    <div class="card-header bg-success text-white py-3">
+                        <h2 class="h4 mb-0"><i class="fas fa-user-circle me-2"></i>Mi Cuenta</h2>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row align-items-center mb-4">
+                            <div class="col-auto">
+                                <div class="bg-success rounded-circle d-flex align-items-center justify-content-center" style="width: 100px; height: 100px; font-size: 3rem;">
+                                    {{ user.email|first|upper }}
+                                </div>
+                            </div>
+                            <div class="col">
+                                <h3 class="text-success mb-1">{{ user.email }}</h3>
+                                <p class="text-muted mb-0">Ciudadano del multiverso desde el {{ user.fechaRegistro|date('d/m/Y') }}</p>
+                                <span class="badge bg-outline-success border border-success text-success mt-2">
+                                {{ user.roles|filter(r => r != 'ROLE_USER')|join(', ') ?: 'Usuario Estándar' }}
+                            </span>
+                            </div>
+                        </div>
+
+                        <hr class="border-secondary my-4">
+
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="p-3 border border-secondary rounded bg-black bg-opacity-25 h-100">
+                                    <h4 class="h6 text-uppercase text-muted fw-bold mb-3">Estadísticas de Actividad</h4>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span>Elementos valorados:</span>
+                                        <span class="badge bg-success fs-6">{{ user.valoraciones|length }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 text-center d-flex align-items-center justify-content-center">
+                                <a href="{{ path('app_ranking_personal') }}" class="btn btn-lg btn-outline-success w-100 py-3">
+                                    <i class="fas fa-star-half-alt me-2"></i> VER MI RANKING
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-black bg-opacity-50 border-success text-center py-3">
+                        <a href="{{ path('app_logout') }}" class="text-danger text-decoration-none small">
+                            <i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

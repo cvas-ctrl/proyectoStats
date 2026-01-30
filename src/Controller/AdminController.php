@@ -272,4 +272,12 @@ final class AdminController extends AbstractController
         $this->addFlash('success', 'Reseña eliminada del multiverso.');
         return $this->redirectToRoute('admin_comentarios');
     }
+
+    #[Route('/admin/usuarios/detalle/{id}', name: 'admin_user_detalle')]
+    public function detalleUsuario(\App\Entity\User $user, EntityManagerInterface $em): Response
+    {
+        return $this->render('admin/usuario.html.twig', [
+            'user' => $user
+        ]);
+    }
 }

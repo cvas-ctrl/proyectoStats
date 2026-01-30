@@ -16,7 +16,11 @@
                 <tbody>
                 {% for user in usuarios %}
                     <tr>
-                        <td>{{ user.email }}</td>
+                        <td>
+                            <a href="{{ path('admin_user_detalle', {id: user.id}) }}" class="text-info fw-bold text-decoration-none">
+                                <i class="fas fa-search me-1"></i> {{ user.email }}
+                            </a>
+                        </td>
                         <td>
                             {% for role in user.roles %}
                                 <span class="badge {{ role == 'ROLE_ADMIN' ? 'bg-danger' : 'bg-info' }}">{{ role }}</span>

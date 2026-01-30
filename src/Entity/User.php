@@ -44,7 +44,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var Collection<int, Valoracion>
      */
     #[ORM\OneToMany(targetEntity: Valoracion::class, mappedBy: 'usuario', orphanRemoval: true)]
-    private Collection $valoracions;
+    private Collection $valoraciones;
 
     /**
      * @var Collection<int, Ranking>
@@ -54,7 +54,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-        $this->valoracions = new ArrayCollection();
+        $this->valoraciones = new ArrayCollection();
         $this->rankings = new ArrayCollection();
         $this->fecha_registro = new \DateTimeImmutable();
     }
@@ -153,15 +153,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Valoracion>
      */
-    public function getValoracions(): Collection
+    public function getValoraciones(): Collection
     {
-        return $this->valoracions;
+        return $this->valoraciones;
     }
 
     public function addValoracion(Valoracion $valoracion): static
     {
-        if (!$this->valoracions->contains($valoracion)) {
-            $this->valoracions->add($valoracion);
+        if (!$this->valoraciones->contains($valoracion)) {
+            $this->valoraciones->add($valoracion);
             $valoracion->setUsuario($this);
         }
 
@@ -170,7 +170,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeValoracion(Valoracion $valoracion): static
     {
-        if ($this->valoracions->removeElement($valoracion)) {
+        if ($this->valoraciones->removeElement($valoracion)) {
             // set the owning side to null (unless already changed)
             if ($valoracion->getUsuario() === $this) {
                 $valoracion->setUsuario(null);
