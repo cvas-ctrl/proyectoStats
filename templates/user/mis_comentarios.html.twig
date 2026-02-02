@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container py-5 text-white">
+        <h1 class="mb-4">Gestionar mis <span class="text-info">Valoraciones</span></h1>
+
+        <div class="table-responsive bg-dark p-4 rounded shadow">
+            <table class="table table-dark table-hover align-middle">
+                <thead>
+                <tr>
+                    <th>Elemento</th>
+                    <th>Nota</th>
+                    <th>Comentario</th>
+                    <th class="text-end">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for val in valoraciones %}
+                    <tr>
+                        <td>{{ val.elemento.nombre }}</td>
+                        <td><span class="badge bg-info text-white">{{ val.puntuacion }}/10</span></td>
+                        <td class="small">{{ val.comentario ?: 'Sin comentario' }}</td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#editModal{{ val.id }}">
+                                <i class="fas fa-edit">EDITAR</i>
+                            </button>
+
+                            <form action="{{ path('app_comentario_borrar', {id: val.id}) }}" method="POST" class="d-inline">
+                                <button class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Seguro que quieres borrarlo?')">
+                                    <i class="fas fa-trash">ELIMINAR</i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+
+                    <div class="modal fade" id="editModal{{ val.id }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content bg-dark border-info text-white">
+                                <form action="{{ path('app_comentario_editar', {id: val.id}) }}" method="POST">
+                                    <div class="modal-header border-info">
+                                        <h5 class="modal-title">Editar valoración de {{ val.elemento.nombre }}</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <label class="form-label">Nota</label>
+                                        <select name="puntuacion" class="form-select bg-black text-white border-secondary mb-3">
+                                            {% for i in 10..1 %}
+                                                <option value="{{ i }}" {{ i == val.puntuacion ? 'selected' }}>{{ i }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label class="form-label">Tu comentario</label>
+                                        <textarea name="comentario" class="form-control bg-black text-white border-secondary" rows="3">{{ val.comentario }}</textarea>
+                                    </div>
+                                    <div class="modal-footer border-info">
+                                        <button type="submit" class="btn btn-info">Guardar Cambios</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <tr><td colspan="4" class="text-center">No has hecho ninguna valoración todavía.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <a href="{{ path('app_perfil') }}" class="btn btn-secondary mt-3">Volver al Perfil</a>
+    </div>
+{% endblock %}

@@ -54,4 +54,32 @@ final class ValoracionController extends AbstractController
 
         return $this->redirect($request->headers->get('referer'));
     }
+
+    #[Route('/mis-comentarios', name: 'app_mis_comentarios')]
+    public function misComentarios(): Response {
+        return $this->render('user/mis_comentarios.html.twig', [
+            'valoraciones' => $this->getUser()->getValoraciones()
+        ]);
+    }
+
+    #[Route('/comentario/borrar/{id}', name: 'app_comentario_borrar', methods: ['POST'])]
+    public function borrarComentario(Valoracion $valoracion, EntityManagerInterface $em): Response {
+        if ($valoracion->getUsuario() === $this->getUser()) {
+            $em->remove($valoracion);
+            $em->flush();
+            $this->addFlash('success', 'Comentario eliminado');
+        }
+        return $this->redirectToRoute('app_mis_comentarios');
+    }
+
+    #[Route('/comentario/editar/{id}', name: 'app_comentario_editar', methods: ['POST'])]
+    public function editarComentario(Valoracion $valoracion, Request $request, EntityManagerInterface $em): Response {
+        if ($valoracion->getUsuario() === $this->getUser()) {
+            $valoracion->setComentario($request->request->get('comentario'));
+            $valoracion->setPuntuacion($request->request->get('puntuacion'));
+            $em->flush();
+            $this->addFlash('success', 'Comentario actualizado');
+        }
+        return $this->redirectToRoute('app_mis_comentarios');
+    }
 }
