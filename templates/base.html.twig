@@ -39,38 +39,80 @@
             <ul class="navbar-nav ms-auto align-items-center gap-3">
                 {% if app.user %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white border border-info border-opacity-25 rounded-pill px-4"
+                        <a class="nav-link dropdown-toggle text-white border border-info border-opacity-50 rounded-pill px-4"
                            href="#"
                            role="button"
                            data-bs-toggle="dropdown"
-                           style="background: rgba(0, 176, 200, 0.1); font-family: 'Arial Black', sans-serif; font-size: 0.85rem;">
-                            <span style="color: #97ce4c;">ID:</span> {{ app.user.username|upper }}
+                           style="background: rgba(0, 176, 200, 0.1);
+                      font-family: 'Arial Black', sans-serif;
+                      font-size: 0.85rem;
+                      transition: all 0.3s ease;
+                      box-shadow: 0 0 10px rgba(0, 176, 200, 0.1);">
+                            <span style="color: #97ce4c; text-shadow: 0 0 5px rgba(151, 206, 76, 0.4);">ID:</span>
+                            {{ app.user.username|upper }}
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-info animate slideIn" style="background: #1a1a1a;">
+
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-info animate slideIn py-2"
+                            style="background: #121212; border: 1px solid rgba(0, 176, 200, 0.5); min-width: 200px;">
+
                             {% if is_granted('ROLE_ADMIN') %}
-                                <li><a class="dropdown-item py-2 text-bg-success" href="{{ path('admin_site') }}">PANEL ADMIN</a></li>
-                                <li><hr class="dropdown-divider bg-info"></li>
+                                <li>
+                                    <a class="dropdown-item py-2 fw-bold" href="{{ path('admin_site') }}" style="color: #97ce4c;">
+                                        <i class="fas fa-crown me-2"></i> PANEL ADMIN
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider" style="background-color: rgba(0, 176, 200, 0.3);"></li>
                             {% endif %}
+
                             <li>
-                                <a class="dropdown-item py-2 text-bg-success" href="{{ path('app_perfil') }}">
-                                    <i class="fas fa-user-cog me-2"></i> MI CUENTA
+                                <a class="dropdown-item py-2 text-white" href="{{ path('app_perfil') }}" style="transition: 0.2s;">
+                                    <i class="fas fa-user-astronaut me-2 text-info"></i> MI CUENTA
+                                </a>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item py-2 text-white" href="{{ path('app_mis_stats') }}" style="transition: 0.2s;">
+                                    <i class="fas fa-chart-line me-2 text-info"></i> MIS ESTADÍSTICAS
+                                </a>
+                            </li>
+
+                            <li><hr class="dropdown-divider" style="background-color: rgba(0, 176, 200, 0.3);"></li>
+
+                            <li>
+                                <a class="dropdown-item py-2 text-danger small" href="{{ path('app_logout') }}">
+                                    <i class="fas fa-sign-out-alt me-2"></i> CERRAR SESIÓN
                                 </a>
                             </li>
                         </ul>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link text-white fw-semibold small" href="{{ path('app_login') }}">LOGIN</a>
+                        <a class="nav-link text-white fw-semibold small px-3" href="{{ path('app_login') }}" style="letter-spacing: 1px;">LOGIN</a>
                     </li>
                     <li class="nav-item">
                         <a class="btn btn-sm px-4 fw-bold shadow-sm rounded-pill"
                            href="{{ path('app_register') }}"
-                           style="background-color: #97ce4c; color: #204529; border: none;">
+                           style="background: linear-gradient(45deg, #97ce4c, #76a33c);
+                      color: #1a1a1a;
+                      border: none;
+                      box-shadow: 0 4px 15px rgba(151, 206, 76, 0.3);
+                      transition: transform 0.2s;">
                             REGISTRO
                         </a>
                     </li>
                 {% endif %}
             </ul>
+
+            <style>
+                .dropdown-item:hover {
+                    background: rgba(0, 176, 200, 0.15) !important;
+                    color: #97ce4c !important;
+                }
+                .dropdown-toggle:hover {
+                    box-shadow: 0 0 15px rgba(0, 176, 200, 0.4) !important;
+                    transform: translateY(-1px);
+                }
+            </style>
         </div>
     </div>
 </nav>

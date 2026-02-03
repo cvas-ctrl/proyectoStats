@@ -60,4 +60,45 @@ final class UserController extends AbstractController
             'categorias' => $catRepo->findAll(),
         ]);
     }
+
+    #[Route('/mis-estadisticas', name: 'app_mis_stats')]
+    public function misEstadisticas(EntityManagerInterface $em): Response
+    {
+        $user = $this->getUser();
+        if (!$user) return $this->redirectToRoute('app_login');
+
+        $misTopElementos = $em->createQuery('
+        SELECT e.nombre, e.imagenUrl, v.puntuacion as nota, c.nombre as catNombre
+        FROM App\Entity\Valoracion v
+        JOIN v.elemento e
+        JOIN e.categoria c
+        WHERE v.usuario = :user
+        ORDER BY v.puntuacion DESC
+    ')
+            ->setParameter('user', $user)
+            ->setMaxResults(10)
+            ->getResult();
+
+        $misPromedios = $em->createQuery('
+        SELECT c.nombre as nombre,
+               AVG(v.puntuacion) as promedio,
+               COUNT(v.id) as totalVotos
+        FROM App\Entity\Valoracion v
+        JOIN v.elemento e
+        JOIN e.categoria c
+        WHERE v.usuario = :user
+        GROUP BY c.id
+    ')
+            ->setParameter('user', $user)
+            ->getResult();
+
+        $miTotalVotos = count($user->getValoraciones());
+
+        return $this->render('user/mis_stats.html.twig', [
+            'topElementos' => $misTopElementos,
+            'promedios' => $misPromedios,
+            'totalVotos' => $miTotalVotos
+        ]);
+    }
+
 }

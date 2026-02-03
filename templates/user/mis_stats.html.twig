@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container py-5 text-white">
+        <h2 class="text-success mb-4"><i class="fas fa-user-chart"></i> Mis Estadísticas Personales</h2>
+
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card bg-dark border-success p-4 text-center shadow">
+                    <h4 class="h6 text-uppercase text-muted">Has valorado</h4>
+                    <span class="display-4 fw-bold text-success">{{ totalVotos }}</span>
+                    <small class="text-muted">elementos en total</small>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="card bg-dark border-success p-3 shadow h-100">
+                    <h4 class="h6 text-uppercase text-success mb-3">Mi criterio por categoría</h4>
+                    <div class="row">
+                        {% for p in promedios %}
+                            <div class="col-4 text-center">
+                                <div class="text-info small fw-bold">{{ p.nombre }}</div>
+                                <div class="h4 mb-0">{{ p.promedio|number_format(1) }} ⭐</div>
+                                <div class="text-muted" style="font-size: 0.7rem;">({{ p.totalVotos }} votos)</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-dark border-success shadow">
+            <div class="card-header bg-success text-white fw-bold">
+                <i class="fas fa-heart me-2"></i> MIS FAVORITOS (TOP 10)
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-dark table-hover mb-0">
+                    <thead>
+                    <tr>
+                        <th class="ps-4">Elemento</th>
+                        <th>Categoría</th>
+                        <th class="text-center">Mi Nota</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for el in topElementos %}
+                        <tr>
+                            <td class="ps-4">
+                                <img src="{{ el.imagenUrl }}" width="40" class="rounded me-2">
+                                {{ el.nombre }}
+                            </td>
+                            <td><span class="badge border border-success text-success">{{ el.catNombre }}</span></td>
+                            <td class="text-center fw-bold text-warning">{{ el.nota }} / 10</td>
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="3" class="text-center py-4 text-muted">Aún no has valorado nada.</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <a href="{{ path('app_perfil') }}" class="btn btn-outline-light">Volver a mi perfil</a>
+        </div>
+    </div>
+{% endblock %}

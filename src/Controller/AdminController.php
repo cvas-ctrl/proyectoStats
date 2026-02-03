@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Elemento;
 use App\Entity\Categoria;
+use App\Entity\Valoracion;
+use App\Repository\ElementoRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -184,24 +186,32 @@ final class AdminController extends AbstractController
     #[Route('/admin/stats', name: 'admin_stats')]
     public function stats(EntityManagerInterface $em): Response
     {
-        $topElementos = $em->createQuery(
-            'SELECT e.nombre, e.imagenUrl, c.nombre as catNombre,
-                    AVG(v.puntuacion) as promedio,
-                    COUNT(v.id) as totalVotos
-             FROM App\Entity\Valoracion v
-             JOIN v.elemento e
-             JOIN e.categoria c
-             GROUP BY e.id, e.nombre, e.imagenUrl, catNombre
-             ORDER BY promedio DESC'
-        )
+        $topElementos = $em->createQuery('
+        SELECT e.nombre, e.imagenUrl, e.puntuacionPromedio as promedio,
+               e.totalValoraciones as totalVotos, c.nombre as catNombre
+        FROM App\Entity\Elemento e
+        JOIN e.categoria c
+        ORDER BY e.puntuacionPromedio DESC
+    ')
             ->setMaxResults(10)
             ->getResult();
 
-        $categorias = $em->getRepository(Categoria::class)->findAll();
+        $statsCategorias = $em->createQuery('
+        SELECT c.nombre as nombre,
+               AVG(v.puntuacion) as promedio,
+               COUNT(v.id) as totalVotos
+        FROM App\Entity\Valoracion v
+        JOIN v.elemento e
+        JOIN e.categoria c
+        GROUP BY c.id
+    ')->getResult();
+
+        $totalGeneralVotos = $em->getRepository(\App\Entity\Valoracion::class)->count([]);
 
         return $this->render('admin/stats.html.twig', [
             'topElementos' => $topElementos,
-            'categorias' => $categorias
+            'statsCategorias' => $statsCategorias,
+            'totalGeneralVotos' => $totalGeneralVotos
         ]);
     }
 
@@ -236,7 +246,7 @@ final class AdminController extends AbstractController
     public function borrarUsuario(\App\Entity\User $user, EntityManagerInterface $em): Response
     {
         if ($user === $this->getUser()) {
-            $this->addFlash('danger', 'No puedes eliminarte.');
+            $this->addFlash('danger', 'No puedes eliminarte');
             return $this->redirectToRoute('admin_usuarios');
         }
 
@@ -269,7 +279,7 @@ final class AdminController extends AbstractController
         $em->remove($valoracion);
         $em->flush();
 
-        $this->addFlash('success', 'Reseña eliminada del multiverso.');
+        $this->addFlash('success', 'Reseña eliminada');
         return $this->redirectToRoute('admin_comentarios');
     }
 

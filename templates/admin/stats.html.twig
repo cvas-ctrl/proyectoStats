@@ -3,71 +3,72 @@
 {% block body %}
     <div class="container py-5 text-white">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="text-danger mb-0"><i class="fas fa-chart-pie"></i> Estadísticas Globales</h2>
+            <h2 class="text-danger mb-0"><i class="fas fa-chart-line"></i> Dashboard de Estadísticas</h2>
 
-            <a href="{{ path('admin_comentarios') }}" class="btn btn-info shadow-sm fw-bold">
-                <i class="fas fa-comments me-2"></i> MODERAR COMENTARIOS
-            </a>
+            {% if is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('admin_comentarios') }}" class="btn btn-info shadow-sm fw-bold">
+                    <i class="fas fa-tools me-2"></i> MODERAR COMENTARIOS
+                </a>
+            {% endif %}
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <div class="bg-dark border border-danger rounded p-4 shadow">
+                    <h3 class="h5 text-uppercase text-secondary mb-2">Total de Valoraciones en el Multiverso</h3>
+                    <span class="display-3 fw-bold text-danger">{{ totalGeneralVotos }}</span>
+                    <p class="text-muted mb-0">votos registrados por la comunidad</p>
+                </div>
+            </div>
         </div>
 
         <div class="row mb-5 g-3">
-            {% for cat in categorias %}
+            <div class="col-12"><h4 class="text-secondary border-bottom border-secondary pb-2 mb-3">Promedio por Categoría</h4></div>
+            {% for cat in statsCategorias %}
                 <div class="col-md-4">
-                    <div class="card bg-dark border-danger p-3 text-center shadow">
-                        <h4 class="h6 text-uppercase text-secondary">{{ cat.nombre }}</h4>
-                        <span class="display-5 fw-bold text-danger">{{ cat.elementos|length }}</span>
-                        <small class="text-muted">registrados</small>
+                    <div class="card bg-dark border-danger p-3 text-center shadow h-100">
+                        <h4 class="h6 text-uppercase text-info">{{ cat.nombre }}</h4>
+                        <span class="h2 fw-bold text-white">{{ cat.promedio|number_format(2) }} <small class="fs-6 text-warning">⭐</small></span>
+                        <small class="text-muted">{{ cat.totalVotos }} valoraciones totales</small>
                     </div>
                 </div>
             {% endfor %}
         </div>
 
         <div class="card bg-dark border-danger shadow">
-            <div class="card-header bg-danger text-white fw-bold d-flex justify-content-between align-items-center">
-                <span>TOP 10 MEJOR VALORADOS (GENERAL)</span>
-                <i class="fas fa-star"></i>
+            <div class="card-header bg-danger text-white fw-bold d-flex justify-content-between align-items-center py-3">
+                <span class="h5 mb-0">TOP 10 MEJOR VALORADOS</span>
+                <i class="fas fa-trophy fa-lg"></i>
             </div>
-            <div class="card-body p-0">
+            <div class="card-body p-0 text-white">
                 <table class="table table-dark table-hover align-middle mb-0">
                     <thead class="table-secondary text-dark">
                     <tr>
-                        <th class="ps-4">Ranking</th>
+                        <th class="ps-4">#</th>
                         <th>Elemento</th>
                         <th>Categoría</th>
-                        <th class="text-center">Puntuación</th>
+                        <th class="text-center">Promedio</th>
                         <th class="text-center">Votos</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for el in topElementos %}
                         <tr>
-                            <td class="ps-4 fw-bold fs-5">#{{ loop.index }}</td>
+                            <td class="ps-4 fw-bold">#{{ loop.index }}</td>
                             <td>
-                                <div class="d-flex align-items-center">
-                                    <img src="{{ el.imagenUrl }}"
-                                         width="60"
-                                         height="60"
-                                         class="rounded shadow-sm border border-secondary me-3"
-                                         style="object-fit: cover;">
+                                <div class="d-flex align-items-center py-2">
+                                    <img src="{{ el.imagenUrl }}" width="50" height="50" class="rounded border border-secondary me-3" style="object-fit: cover;">
                                     <span class="fw-bold">{{ el.nombre }}</span>
                                 </div>
                             </td>
-                            <td>
-                                <span class="badge bg-outline-light border text-light">{{ el.catNombre }}</span>
-                            </td>
-                            <td class="text-warning fw-bold text-center fs-5">
-                                {{ el.promedio|number_format(1) }} ⭐
-                            </td>
+                            <td><span class="badge border border-info text-info">{{ el.catNombre }}</span></td>
+                            <td class="text-warning fw-bold text-center">{{ el.promedio|number_format(1) }} ⭐</td>
                             <td class="text-center">
-                                <span class="badge bg-secondary opacity-75">{{ el.totalVotos }} votos</span>
+                                <span class="badge bg-secondary">{{ el.totalVotos }}</span>
                             </td>
                         </tr>
                     {% else %}
-                        <tr>
-                            <td colspan="5" class="text-center py-5 text-muted italic">
-                                <i class="fas fa-info-circle"></i> Aún no hay elementos valorados.
-                            </td>
-                        </tr>
+                        <tr><td colspan="5" class="text-center py-5">No hay datos suficientes para el ranking.</td></tr>
                     {% endfor %}
                     </tbody>
                 </table>

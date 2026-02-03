@@ -65,8 +65,12 @@ final class ValoracionController extends AbstractController
     #[Route('/comentario/borrar/{id}', name: 'app_comentario_borrar', methods: ['POST'])]
     public function borrarComentario(Valoracion $valoracion, EntityManagerInterface $em): Response {
         if ($valoracion->getUsuario() === $this->getUser()) {
+            $elemento = $valoracion->getElemento();
             $em->remove($valoracion);
             $em->flush();
+
+            $this->actualizarMediaElemento($elemento, $em);
+
             $this->addFlash('success', 'Comentario eliminado');
         }
         return $this->redirectToRoute('app_mis_comentarios');
@@ -76,10 +80,34 @@ final class ValoracionController extends AbstractController
     public function editarComentario(Valoracion $valoracion, Request $request, EntityManagerInterface $em): Response {
         if ($valoracion->getUsuario() === $this->getUser()) {
             $valoracion->setComentario($request->request->get('comentario'));
-            $valoracion->setPuntuacion($request->request->get('puntuacion'));
+            $valoracion->setPuntuacion((int)$request->request->get('puntuacion'));
+            $valoracion->setFechaCreacion(new \DateTimeImmutable());
+
             $em->flush();
+
+            $this->actualizarMediaElemento($valoracion->getElemento(), $em);
+
             $this->addFlash('success', 'Comentario actualizado');
         }
         return $this->redirectToRoute('app_mis_comentarios');
+    }
+
+    private function actualizarMediaElemento(Elemento $elemento, EntityManagerInterface $em): void
+    {
+        $todasLasValoraciones = $elemento->getValoraciones();
+        $totalVotos = count($todasLasValoraciones);
+        $sumaPuntos = 0;
+
+        foreach ($todasLasValoraciones as $v) {
+            $sumaPuntos += $v->getPuntuacion();
+        }
+
+        $promedio = $totalVotos > 0 ? $sumaPuntos / $totalVotos : 0;
+
+        $elemento->setTotalValoraciones($totalVotos);
+        $elemento->setPuntuacionPromedio($promedio);
+
+        $em->persist($elemento);
+        $em->flush();
     }
 }
