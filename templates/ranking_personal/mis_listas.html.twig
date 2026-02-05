@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container py-5 text-white">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <h1 class="text-info m-0"><i class="fas fa-trophy me-3"></i>Mis Tiers y Rankings</h1>
+            <a href="{{ path('app_ranking_nuevo') }}" class="btn btn-outline-warning rounded-pill">
+                + Crear otro
+            </a>
+        </div>
+
+        <div class="row g-4">
+            {% for r in rankings %}
+                <div class="col-md-4">
+                    <div class="card bg-dark border-info h-100 shadow-sm hover-zoom">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h4 class="card-title text-white mb-0">{{ r.nombreRanking }}</h4>
+                                <span class="badge bg-info">{{ r.rankingElementos|length }} elementos</span>
+                            </div>
+
+                            <p class="text-muted small">
+                                Creado el: {{ r.fechaCreacion|date('d/m/Y H:i') }}
+                            </p>
+
+                            <div class="mt-4">
+                                <a href="{{ path('app_ranking_ver_final', {'id': r.id}) }}" class="btn btn-info w-100 fw-bold">
+                                    <i class="fas fa-eye me-2"></i> Ver Ranking
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12 text-center py-5">
+                    <p class="text-muted fs-4">Aún no has creado ningún ranking personalizado.</p>
+                    <a href="{{ path('app_ranking_nuevo') }}" class="btn btn-warning mt-3">¡Empieza ahora!</a>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="mt-5 text-center">
+            <a href="{{ path('app_ranking_personal') }}" class="text-muted text-decoration-none">
+                <i class="fas fa-arrow-left me-2"></i> Volver a mis estadísticas
+            </a>
+        </div>
+    </div>
+
+    <style>
+        .hover-zoom { transition: transform 0.2s; }
+        .hover-zoom:hover { transform: translateY(-5px); border-color: #ffc107 !important; }
+    </style>
+{% endblock %}

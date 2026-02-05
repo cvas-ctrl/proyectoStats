@@ -111,7 +111,15 @@
             <div class="col-md-8">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h3 class="text-success h4 m-0">Inventario de Elementos</h3>
-                    <input type="text" id="buscador" class="form-control form-control-sm w-50 bg-dark text-white border-success" placeholder="Buscar por nombre...">
+                    <div class="d-flex gap-2 w-50">
+                        <input type="text" id="buscador" class="form-control form-control-sm bg-dark text-white border-success" placeholder="Buscar por nombre...">
+                        <select id="selector-categoria" class="form-select form-select-sm bg-dark text-white border-success">
+                            <option value="todas">Todas</option>
+                            {% for c in categorias %}
+                                <option value="{{ c.nombre|lower }}">{{ c.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
 
                 <div class="table-responsive bg-dark rounded shadow-sm border border-success" style="max-height: 500px; overflow-y: auto;">
@@ -127,10 +135,10 @@
                         <tbody>
                         {% for c in categorias %}
                             {% for el in c.elementos %}
-                                <tr>
+                                <tr class="fila-elemento" data-categoria="{{ c.nombre|lower }}">
                                     <td><img src="{{ el.imagenUrl }}" width="35" class="rounded"></td>
                                     <td class="nombre-el">{{ el.nombre }}</td>
-                                    <td><span class="badge bg-secondary">{{ c.nombre }}</span></td>
+                                    <td class="cat-el"><span class="badge bg-secondary">{{ c.nombre }}</span></td>
                                     <td class="text-end">
                                         <a href="{{ path('admin_el_editar', {id: el.id}) }}" class="btn btn-outline-warning btn-sm">
                                             <i class="fas fa-edit">EDITAR</i>
@@ -149,7 +157,35 @@
                 </div>
             </div>
         </div>
-
-
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const buscador = document.getElementById('buscador');
+            const selector = document.getElementById('selector-categoria');
+
+            function filtrar() {
+                let filtroTexto = buscador.value.toLowerCase();
+                let filtroCat = selector.value;
+                let filas = document.querySelectorAll('.fila-elemento');
+
+                filas.forEach(function(fila) {
+                    let nombre = fila.querySelector('.nombre-el').textContent.toLowerCase();
+                    let categoria = fila.getAttribute('data-categoria');
+
+                    let coincideTexto = nombre.includes(filtroTexto);
+                    let coincideCat = filtroCat === 'todas' || categoria === filtroCat;
+
+                    if (coincideTexto && coincideCat) {
+                        fila.style.display = '';
+                    } else {
+                        fila.style.display = 'none';
+                    }
+                });
+            }
+
+            buscador.addEventListener('keyup', filtrar);
+            selector.addEventListener('change', filtrar);
+        });
+    </script>
 {% endblock %}

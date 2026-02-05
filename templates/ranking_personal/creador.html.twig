@@ -8,16 +8,32 @@
             <div class="row">
                 <div class="col-md-7">
                     <div class="card bg-dark border-secondary p-4 shadow">
-                        <h5 class="text-success mb-3">Paso 1: Selecciona los elementos en orden</h5>
-                        <div class="row g-2 overflow-auto" style="max-height: 600px;">
+                        <h5 class="text-success mb-3">Selecciona los elementos en orden</h5>
+
+                        <div class="row mb-3 g-2">
+                            <div class="col-md-7">
+                                <input type="text" id="buscador" class="form-control bg-dark text-white border-success"
+                                       placeholder="Escribe para buscar...">
+                            </div>
+                            <div class="col-md-5">
+                                <select id="filtroCategoria" class="form-select bg-dark text-white border-success">
+                                    <option value="todas">Todas las categorías</option>
+                                    {% for cat in categorias %}
+                                        <option value="{{ cat.nombre|lower }}">{{ cat.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row g-2 overflow-auto" id="lista-elementos" style="max-height: 600px;">
                             {% for el in elementos %}
-                                <div class="col-4">
-                                    <div class="card bg-black border-secondary item-to-select"
+                                <div class="col-4 item-bloque" id="el-{{ el.id }}" data-categoria="{{ el.categoria.nombre|lower }}">
+                                    <div class="card bg-black border-secondary"
                                          onclick="addToRanking('{{ el.id }}', '{{ el.nombre }}', '{{ el.imagenUrl }}')"
-                                         id="el-{{ el.id }}" style="cursor:pointer;">
+                                         style="cursor:pointer;">
                                         <img src="{{ el.imagenUrl }}" class="card-img-top" style="height: 100px; object-fit: cover;">
                                         <div class="card-body p-2 text-center">
-                                            <small class="d-block text-truncate">{{ el.nombre }}</small>
+                                            <small class="nombre-el">{{ el.nombre }}</small>
                                         </div>
                                     </div>
                                 </div>
@@ -27,16 +43,16 @@
                 </div>
 
                 <div class="col-md-5">
-                    <div class="card bg-dark border-warning p-4 shadow h-100">
-                        <h5 class="text-warning mb-3">Paso 2: Dale nombre y revisa el orden</h5>
+                    <div class="card bg-dark border-warning p-4 shadow h-100 d-flex flex-column">
+                        <h5 class="text-warning mb-3">Dale nombre y revisa el orden</h5>
                         <input type="text" name="nombre_ranking" class="form-control mb-4 bg-black text-white border-warning" placeholder="Nombre: Ej. Mis favoritos S1" required>
 
-                        <div id="ranking-preview" class="list-group">
+                        <div id="ranking-preview" class="list-group flex-grow-1 overflow-auto" style="max-height: 500px;">
                             <p class="text-muted text-center py-5">Haz clic en los elementos de la izquierda para empezar...</p>
                         </div>
 
-                        <button type="submit" class="btn btn-warning w-100 mt-auto fw-bold py-3 mt-4">
-                            ¡GUARDAR MI RANKING DEFINITIVO!
+                        <button type="submit" class="btn btn-warning w-100 fw-bold py-3 mt-4">
+                            GUARDAR MI RANKING
                         </button>
                     </div>
                 </div>
@@ -46,23 +62,53 @@
 
     <script>
         let pos = 1;
+
         function addToRanking(id, nombre, img) {
             const preview = document.getElementById('ranking-preview');
             if (pos === 1) preview.innerHTML = '';
 
-            document.getElementById('el-' + id).style.opacity = '0.2';
-            document.getElementById('el-' + id).style.pointerEvents = 'none';
+            const card = document.getElementById('el-' + id);
+            if (card) {
+                card.style.opacity = '0.2';
+                card.style.pointerEvents = 'none';
+            }
 
             const html = `
             <div class="list-group-item bg-black border-secondary text-white d-flex align-items-center mb-2 animate__animated animate__fadeInRight">
                 <span class="badge bg-warning text-dark me-3 fs-5">#${pos}</span>
-                <img src="${img}" width="40" class="rounded me-3">
+                <img src="${img}" width="40" height="40" class="rounded me-3" style="object-fit: cover;">
                 <span class="flex-grow-1">${nombre}</span>
                 <input type="hidden" name="elementos_seleccionados[]" value="${id}">
             </div>
-        `;
+            `;
             preview.insertAdjacentHTML('beforeend', html);
             pos++;
         }
+
+        const buscador = document.getElementById('buscador');
+        const selector = document.getElementById('filtroCategoria');
+
+        function filtrar() {
+            let texto = buscador.value.toLowerCase();
+            let catSeleccionada = selector.value;
+            let items = document.querySelectorAll('.item-bloque');
+
+            items.forEach(function(item) {
+                let nombre = item.querySelector('.nombre-el').textContent.toLowerCase();
+                let categoria = item.getAttribute('data-categoria');
+
+                let coincideNombre = nombre.includes(texto);
+                let coincideCat = (catSeleccionada === 'todas' || categoria === catSeleccionada);
+
+                if (coincideNombre && coincideCat) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        buscador.addEventListener('keyup', filtrar);
+        selector.addEventListener('change', filtrar);
     </script>
 {% endblock %}

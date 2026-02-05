@@ -2,7 +2,7 @@
 
 {% block body %}
     <div class="container py-5 text-center">
-        <h1 class="display-3 fw-bold text-success mb-0">{{ ranking.nombre|upper }}</h1>
+        <h1 class="display-3 fw-bold text-success mb-0">{{ ranking.nombreRanking|upper }}</h1>
         <p class="text-muted mb-5">Creado por {{ app.user.username }}</p>
 
         <div class="row justify-content-center">
@@ -17,7 +17,7 @@
                             <h4 class="mb-0 text-white">{{ re.elemento.nombre }}</h4>
                             <small class="text-muted">{{ re.elemento.categoria.nombre }}</small>
                         </div>
-                        {% if loop.index == 1 %}<div class="ms-auto pe-4 fs-2">👑</div>{% endif %}
+                        {% if loop.index == 1 %}{% endif %}
                     </div>
                 {% endfor %}
             </div>

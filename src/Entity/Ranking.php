@@ -39,6 +39,7 @@ class Ranking
     public function __construct()
     {
         $this->rankingElementos = new ArrayCollection();
+        $this->fechaCreacion = new \DateTimeImmutable();
     }
 
     public function getId(): ?int

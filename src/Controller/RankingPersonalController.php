@@ -6,6 +6,7 @@ use App\Entity\Ranking;
 use App\Entity\RankingElemento;
 use App\Repository\CategoriaRepository;
 use App\Repository\ElementoRepository;
+use App\Repository\RankingRepository;
 use App\Repository\ValoracionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -41,26 +42,30 @@ final class RankingPersonalController extends AbstractController
     }
 
     #[Route('/crear-mi-tier', name: 'app_ranking_nuevo')]
-    public function nuevo(ElementoRepository $elRepo): Response
+    public function nuevo(ElementoRepository $elRepo, CategoriaRepository $catRepo): Response
     {
         return $this->render('ranking_personal/creador.html.twig', [
-            'elementos' => $elRepo->findAll()
+            'elementos' => $elRepo->findAll(),
+            'categorias' => $catRepo->findAll()
         ]);
     }
 
-    #[Route('/ranking/guardar', name: 'app_ranking_guardar', methods: ['POST'])]
+    #[Route('/procesar-mi-ranking', name: 'app_ranking_guardar', methods: ['POST'])]
     public function guardar(Request $request, EntityManagerInterface $em, ElementoRepository $elRepo): Response
     {
         $nombre = $request->request->get('nombre_ranking');
-        $idsOrdenados = $request->request->get('elementos_seleccionados');
+        $params = $request->request->all();
+        $idsOrdenados = $params['elementos_seleccionados'] ?? [];
 
-        if (!$nombre || !$idsOrdenados) {
+        if (!$nombre || empty($idsOrdenados)) {
             return $this->redirectToRoute('app_ranking_nuevo');
         }
 
         $ranking = new Ranking();
-        $ranking->setNombre($nombre);
+        $ranking->setNombreRanking($nombre);
         $ranking->setUsuario($this->getUser());
+
+
         $em->persist($ranking);
 
         foreach ($idsOrdenados as $indice => $id) {
@@ -75,6 +80,7 @@ final class RankingPersonalController extends AbstractController
         }
 
         $em->flush();
+
         return $this->redirectToRoute('app_ranking_ver_final', ['id' => $ranking->getId()]);
     }
 
@@ -87,6 +93,21 @@ final class RankingPersonalController extends AbstractController
 
         return $this->render('ranking_personal/ver_final.html.twig', [
             'ranking' => $ranking
+        ]);
+    }
+
+    #[Route('/mis-rankings-lista', name: 'app_mis_rankings_lista')]
+    public function listaRankings(RankingRepository $rankingRepo): Response
+    {
+        $user = $this->getUser();
+
+        $misRankings = $rankingRepo->findBy(
+            ['usuario' => $user],
+            ['fechaCreacion' => 'DESC']
+        );
+
+        return $this->render('ranking_personal/mis_listas.html.twig', [
+            'rankings' => $misRankings
         ]);
     }
 }
