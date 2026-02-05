@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container py-5 text-white">
+        <h1 class="mb-4 text-warning"><i class="fas fa-edit"></i> Diseña tu Ranking</h1>
+
+        <form action="{{ path('app_ranking_guardar') }}" method="POST">
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="card bg-dark border-secondary p-4 shadow">
+                        <h5 class="text-success mb-3">Paso 1: Selecciona los elementos en orden</h5>
+                        <div class="row g-2 overflow-auto" style="max-height: 600px;">
+                            {% for el in elementos %}
+                                <div class="col-4">
+                                    <div class="card bg-black border-secondary item-to-select"
+                                         onclick="addToRanking('{{ el.id }}', '{{ el.nombre }}', '{{ el.imagenUrl }}')"
+                                         id="el-{{ el.id }}" style="cursor:pointer;">
+                                        <img src="{{ el.imagenUrl }}" class="card-img-top" style="height: 100px; object-fit: cover;">
+                                        <div class="card-body p-2 text-center">
+                                            <small class="d-block text-truncate">{{ el.nombre }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="card bg-dark border-warning p-4 shadow h-100">
+                        <h5 class="text-warning mb-3">Paso 2: Dale nombre y revisa el orden</h5>
+                        <input type="text" name="nombre_ranking" class="form-control mb-4 bg-black text-white border-warning" placeholder="Nombre: Ej. Mis favoritos S1" required>
+
+                        <div id="ranking-preview" class="list-group">
+                            <p class="text-muted text-center py-5">Haz clic en los elementos de la izquierda para empezar...</p>
+                        </div>
+
+                        <button type="submit" class="btn btn-warning w-100 mt-auto fw-bold py-3 mt-4">
+                            ¡GUARDAR MI RANKING DEFINITIVO!
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let pos = 1;
+        function addToRanking(id, nombre, img) {
+            const preview = document.getElementById('ranking-preview');
+            if (pos === 1) preview.innerHTML = '';
+
+            document.getElementById('el-' + id).style.opacity = '0.2';
+            document.getElementById('el-' + id).style.pointerEvents = 'none';
+
+            const html = `
+            <div class="list-group-item bg-black border-secondary text-white d-flex align-items-center mb-2 animate__animated animate__fadeInRight">
+                <span class="badge bg-warning text-dark me-3 fs-5">#${pos}</span>
+                <img src="${img}" width="40" class="rounded me-3">
+                <span class="flex-grow-1">${nombre}</span>
+                <input type="hidden" name="elementos_seleccionados[]" value="${id}">
+            </div>
+        `;
+            preview.insertAdjacentHTML('beforeend', html);
+            pos++;
+        }
+    </script>
+{% endblock %}

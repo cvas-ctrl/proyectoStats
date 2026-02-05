@@ -4,7 +4,9 @@
     <div class="container py-5">
         <div class="d-flex justify-content-between align-items-center mb-5">
             <h1 class="text-white m-0">Mis <span class="text-success">{{ categoriaActual }}</span> puntuados</h1>
-
+            <a href="{{ path('app_ranking_nuevo') }}" class="btn btn-warning rounded-pill px-4 me-3 fw-bold shadow">
+                <i class="fas fa-plus-circle me-2"></i> CREAR MI PROPIO RANKING
+            </a>
             <div class="dropdown">
                 <button class="btn btn-outline-success dropdown-toggle rounded-pill px-4" type="button" data-bs-toggle="dropdown">
                     Cambiar Categoría
