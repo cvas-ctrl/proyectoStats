@@ -124,10 +124,15 @@ final class AdminController extends AbstractController
 
     #[Route('/admin/categoria/borrar/{id}', name: 'admin_cat_borrar')]
     public function borrarCat(Categoria $cat, EntityManagerInterface $em): Response {
+        if (!$cat->getElementos()->isEmpty()) {
+            $this->addFlash('danger', 'No se puede borrar: Esta categoría tiene elementos vinculados que podrían estar en rankings.');
+            return $this->redirectToRoute('admin_gestion');
+        }
+
         $em->remove($cat);
         $em->flush();
 
-        $this->addFlash('success', 'Categoría eliminada.');
+        $this->addFlash('success', 'Categoría vacía eliminada correctamente.');
         return $this->redirectToRoute('admin_gestion');
     }
 
