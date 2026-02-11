@@ -5,40 +5,68 @@
         <h1 class="text-warning mb-4"><i class="fas fa-edit me-2"></i>Editando: {{ ranking.nombreRanking }}</h1>
 
         <form method="post" class="bg-dark p-4 rounded shadow-lg border border-secondary">
-            <div class="mb-4">
-                <label class="form-label h5 text-info">Nuevo nombre de la Tier List:</label>
-                <input type="text" name="nombre_ranking" class="form-control form-control-lg bg-dark text-white border-info" value="{{ ranking.nombreRanking }}" required>
-            </div>
-
-            <hr class="border-secondary">
-
-            <h3 class="text-info mt-4">Reordenar Posiciones</h3>
-            <p class="text-muted small">Haz clic en los elementos en el orden que quieras que aparezcan (del 1 al último):</p>
-
-            <div class="row g-3">
-                {% for el in elementos %}
-                    <div class="col-6 col-md-2">
-                        <div class="card bg-dark border-secondary h-100 text-center p-2 hover-card">
-                            <img src="{{ el.imagenUrl }}" class="img-fluid rounded mb-2" style="height: 100px; object-fit: cover;">
-                            <div class="form-check d-flex justify-content-center">
-                                <input class="form-check-input me-2" type="checkbox" name="elementos_seleccionados[]" value="{{ el.id }}">
-                                <label class="small text-white">{{ el.nombre }}</label>
-                            </div>
-                        </div>
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="mb-4">
+                        <label class="form-label h5 text-info">Nombre de la Tier List:</label>
+                        <input type="text" name="nombre_ranking" class="form-control bg-dark text-white border-info" value="{{ ranking.nombreRanking }}" required>
                     </div>
-                {% endfor %}
-            </div>
 
-            <div class="mt-5">
-                <button type="submit" class="btn btn-warning btn-lg w-100 fw-bold">
-                    <i class="fas fa-save me-2"></i>Guardar Cambios y Nuevo Orden
-                </button>
-                <a href="{{ path('app_mis_rankings_lista') }}" class="btn btn-link text-muted w-100 mt-2">Cancelar</a>
+                    <h5 class="text-success mb-3">Haz clic para elegir el nuevo orden:</h5>
+                    <div class="row g-2 overflow-auto" style="max-height: 500px;">
+                        {% for el in elementos %}
+                            <div class="col-4 item-bloque" id="el-{{ el.id }}">
+                                <div class="card bg-black border-secondary"
+                                     onclick="addToEdit('{{ el.id }}', '{{ el.nombre }}', '{{ el.imagenUrl }}')"
+                                     style="cursor:pointer;">
+                                    <img src="{{ el.imagenUrl }}" class="card-img-top" style="height: 80px; object-fit: cover;">
+                                    <div class="card-body p-1 text-center">
+                                        <small class="text-white" style="font-size: 0.7rem;">{{ el.nombre }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="card bg-black border-warning p-3 h-100">
+                        <h5 class="text-warning mb-3">Nuevo Orden Definido:</h5>
+                        <div id="ranking-preview" class="list-group">
+                            <p class="text-muted text-center py-5">Clica personajes a la izquierda...</p>
+                        </div>
+
+                        <button type="submit" class="btn btn-warning btn-lg w-100 fw-bold mt-auto">
+                            <i class="fas fa-save me-2"></i>GUARDAR CAMBIOS
+                        </button>
+                        <a href="{{ path('app_mis_rankings_lista') }}" class="btn btn-link text-muted w-100 mt-2">Cancelar</a>
+                    </div>
+                </div>
             </div>
         </form>
     </div>
 
-    <style>
-        .hover-card:hover { border-color: #0dcaf0 !important; transform: scale(1.05); transition: 0.3s; }
-    </style>
+    <script>
+        let pos = 1;
+
+        function addToEdit(id, nombre, img) {
+            const preview = document.getElementById('ranking-preview');
+            if (pos === 1) preview.innerHTML = '';
+
+            const card = document.getElementById('el-' + id);
+            card.style.opacity = '0.3';
+            card.style.pointerEvents = 'none';
+
+            const html = `
+            <div class="list-group-item bg-dark border-secondary text-white d-flex align-items-center mb-2 shadow-sm">
+                <span class="badge bg-warning text-dark me-2">#${pos}</span>
+                <img src="${img}" width="30" height="30" class="rounded me-2" style="object-fit: cover;">
+                <span class="small flex-grow-1">${nombre}</span>
+                <input type="hidden" name="elementos_seleccionados[]" value="${id}">
+            </div>
+            `;
+            preview.insertAdjacentHTML('beforeend', html);
+            pos++;
+        }
+    </script>
 {% endblock %}
