@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container py-5 text-white">
+        <h1 class="text-warning mb-4"><i class="fas fa-edit me-2"></i>Editando: {{ ranking.nombreRanking }}</h1>
+
+        <form method="post" class="bg-dark p-4 rounded shadow-lg border border-secondary">
+            <div class="mb-4">
+                <label class="form-label h5 text-info">Nuevo nombre de la Tier List:</label>
+                <input type="text" name="nombre_ranking" class="form-control form-control-lg bg-dark text-white border-info" value="{{ ranking.nombreRanking }}" required>
+            </div>
+
+            <hr class="border-secondary">
+
+            <h3 class="text-info mt-4">Reordenar Posiciones</h3>
+            <p class="text-muted small">Haz clic en los elementos en el orden que quieras que aparezcan (del 1 al último):</p>
+
+            <div class="row g-3">
+                {% for el in elementos %}
+                    <div class="col-6 col-md-2">
+                        <div class="card bg-dark border-secondary h-100 text-center p-2 hover-card">
+                            <img src="{{ el.imagenUrl }}" class="img-fluid rounded mb-2" style="height: 100px; object-fit: cover;">
+                            <div class="form-check d-flex justify-content-center">
+                                <input class="form-check-input me-2" type="checkbox" name="elementos_seleccionados[]" value="{{ el.id }}">
+                                <label class="small text-white">{{ el.nombre }}</label>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="mt-5">
+                <button type="submit" class="btn btn-warning btn-lg w-100 fw-bold">
+                    <i class="fas fa-save me-2"></i>Guardar Cambios y Nuevo Orden
+                </button>
+                <a href="{{ path('app_mis_rankings_lista') }}" class="btn btn-link text-muted w-100 mt-2">Cancelar</a>
+            </div>
+        </form>
+    </div>
+
+    <style>
+        .hover-card:hover { border-color: #0dcaf0 !important; transform: scale(1.05); transition: 0.3s; }
+    </style>
+{% endblock %}
