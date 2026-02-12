@@ -12,16 +12,31 @@
                         <input type="text" name="nombre_ranking" class="form-control bg-dark text-white border-info" value="{{ ranking.nombreRanking }}" required>
                     </div>
 
+                    <div class="row mb-3 g-2">
+                        <div class="col-md-7">
+                            <input type="text" id="buscador" class="form-control bg-dark text-white border-success"
+                                   placeholder="Buscar por nombre...">
+                        </div>
+                        <div class="col-md-5">
+                            <select id="filtroCategoria" class="form-select bg-dark text-white border-success">
+                                <option value="todas">Todas las categorías</option>
+                                {% for cat in categorias %}
+                                    <option value="{{ cat.nombre|lower }}">{{ cat.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
                     <h5 class="text-success mb-3">Haz clic para elegir el nuevo orden:</h5>
-                    <div class="row g-2 overflow-auto" style="max-height: 500px;">
+                    <div class="row g-2 overflow-auto" id="lista-elementos" style="max-height: 500px;">
                         {% for el in elementos %}
-                            <div class="col-4 item-bloque" id="el-{{ el.id }}">
+                            <div class="col-4 item-bloque" id="el-{{ el.id }}" data-categoria="{{ el.categoria.nombre|lower }}">
                                 <div class="card bg-black border-secondary"
                                      onclick="addToEdit('{{ el.id }}', '{{ el.nombre }}', '{{ el.imagenUrl }}')"
                                      style="cursor:pointer;">
                                     <img src="{{ el.imagenUrl }}" class="card-img-top" style="height: 80px; object-fit: cover;">
                                     <div class="card-body p-1 text-center">
-                                        <small class="text-white" style="font-size: 0.7rem;">{{ el.nombre }}</small>
+                                        <small class="text-white nombre-el" style="font-size: 0.7rem;">{{ el.nombre }}</small>
                                     </div>
                                 </div>
                             </div>
@@ -30,13 +45,13 @@
                 </div>
 
                 <div class="col-md-5">
-                    <div class="card bg-black border-warning p-3 h-100">
+                    <div class="card bg-black border-warning p-3 h-100 d-flex flex-column">
                         <h5 class="text-warning mb-3">Nuevo Orden Definido:</h5>
-                        <div id="ranking-preview" class="list-group">
+                        <div id="ranking-preview" class="list-group flex-grow-1 overflow-auto" style="max-height: 500px;">
                             <p class="text-muted text-center py-5">Clica personajes a la izquierda...</p>
                         </div>
 
-                        <button type="submit" class="btn btn-warning btn-lg w-100 fw-bold mt-auto">
+                        <button type="submit" class="btn btn-warning btn-lg w-100 fw-bold mt-4">
                             <i class="fas fa-save me-2"></i>GUARDAR CAMBIOS
                         </button>
                         <a href="{{ path('app_mis_rankings_lista') }}" class="btn btn-link text-muted w-100 mt-2">Cancelar</a>
@@ -58,7 +73,7 @@
             card.style.pointerEvents = 'none';
 
             const html = `
-            <div class="list-group-item bg-dark border-secondary text-white d-flex align-items-center mb-2 shadow-sm">
+            <div class="list-group-item bg-dark border-secondary text-white d-flex align-items-center mb-2 shadow-sm animate__animated animate__fadeInRight">
                 <span class="badge bg-warning text-dark me-2">#${pos}</span>
                 <img src="${img}" width="30" height="30" class="rounded me-2" style="object-fit: cover;">
                 <span class="small flex-grow-1">${nombre}</span>
@@ -68,5 +83,27 @@
             preview.insertAdjacentHTML('beforeend', html);
             pos++;
         }
+
+        const buscador = document.getElementById('buscador');
+        const selector = document.getElementById('filtroCategoria');
+
+        function filtrar() {
+            let texto = buscador.value.toLowerCase();
+            let catSeleccionada = selector.value;
+            let items = document.querySelectorAll('.item-bloque');
+
+            items.forEach(function(item) {
+                let nombre = item.querySelector('.nombre-el').textContent.toLowerCase();
+                let categoria = item.getAttribute('data-categoria');
+
+                let coincideNombre = nombre.includes(texto);
+                let coincideCat = (catSeleccionada === 'todas' || categoria === catSeleccionada);
+
+                item.style.display = (coincideNombre && coincideCat) ? '' : 'none';
+            });
+        }
+
+        buscador.addEventListener('keyup', filtrar);
+        selector.addEventListener('change', filtrar);
     </script>
 {% endblock %}
